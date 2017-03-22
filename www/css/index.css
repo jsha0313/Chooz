@@ -1,0 +1,61 @@
+html{
+    font-family: 'Roboto', sans-serif;
+}
+
+.backgrounBlue{
+    background-color: #bbdef0;
+}
+h1{
+    text-align: center;
+    font-size: 50px;
+    color: white;
+}
+
+.loginOuter{
+    background-color: #bbdef0;
+    display: table;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+.loginMid{
+    display: table-cell;
+    vertical-align: middle;
+}
+.loginInner{
+    text-align: center;
+    margin: auto;
+}
+
+/*inputs*/
+.id{
+    width: 55%;
+}
+.password{
+    width: 55%;
+}
+.reg{
+    width: 55%;
+}
+
+.loginBtn{
+    background-color: #3EC9FF;
+    max-width: 70%;
+    max-height: 50%;
+}
+.guestBtn{
+    background-color: #3EC9FF;
+    max-width: 70%;
+    max-height: 50%;
+}
+.regBtn{
+    background-color : transparent;
+    border-bottom-color: transparent;
+    border: none;
+    border-radius: 0px;
+    box-shadow: none;
+    font-size: 15px;
+}
+.regConfirm{
+    background-color: #3EC9FF;
+}
