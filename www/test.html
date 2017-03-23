@@ -11,10 +11,19 @@
     <!--    Fonts-->
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     
+    
 <script src="https://www.gstatic.com/firebasejs/3.7.3/firebase.js"></script>
-
-    
-    
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCklt4gW7mBR4lV-IIKezeTPXHYF28L7Jg",
+    authDomain: "chooz-bd8c2.firebaseapp.com",
+    databaseURL: "https://chooz-bd8c2.firebaseio.com",
+    storageBucket: "chooz-bd8c2.appspot.com",
+    messagingSenderId: "623847355109"
+  };
+  firebase.initializeApp(config);
+</script>
     <script src="lib/onsen/js/onsenui.js"></script>
 <!--    <script type="text/javascript" src="cordova.js"></script> Future Use for Cordova Plugins-->
     <script type="text/javascript" src="js/index.js"></script>
@@ -31,14 +40,12 @@
                     <div class="loginInner">
                         <h1>Chooz</h1><br><br>
                         <div>
-                        <input type="email" id="email" class="id" placeholder="Email"><br>
-                        <input type="password" id="password" class="password" placeholder="Password"><br><br>
+                        <input type="email" id="log_id" class="id" placeholder="Email"><br>
+                        <input type="password" id="log_password" class="password" placeholder="Password"><br><br>
                         </div>
-                        <ons-button id = "btnLogin" class= "btn btn-action">Login</ons-button>
-                        <ons-button class= "guestBtn" id = "btnGuest">Guest</ons-button><br>
-                        <!--<ons-button class= "register" id="registerButton" onclick="myNav.pushPage('register.html');">Not a Member? Click Here to Register</ons-button>-->
-                        <ons-button id = "btnSignUp"  class="btn btn-secondary">Register</ons-button>
-                        <ons-button id = "btnLogout" class= "btn btn-action hide">Log out</ons-button><br>
+                        <ons-button class="loginBtn" id="loginButton" onclick="login()">Login</ons-button>
+                        <ons-button class="guestBtn" onclick="anonLogin()">Guest</ons-button><br>
+                        <ons-button class="regBtn" id="registerButton" onclick="myNav.pushPage('register.html');">Not a Member? Click Here to Register</ons-button>
                     </div>
                 </div>
             </div>
@@ -55,12 +62,12 @@
             <div class="loginOuter">
               <div class="loginMid">
                   <div class="loginInner">    
-                      <input class="reg" type = "text" placeholder="Full Name"><br>
-                      <input class="reg" type = "email" id = "txtEmail" placeholder="Email Address"><br>
-                      <input class="reg" type = "password" id = "txtPassword" placeholder="Password"><br>
-                      <input class="reg" type = "password" placeholder="Confirm Password"><br><br>
+                      <input class="reg" placeholder="Full Name"><br>
+                      <input type="email" class="reg" id="reg_id" placeholder="Email"><br>
+                      <input type="password" class="reg" id="reg_password" placeholder="Password"><br>
+                      <input type="password" class="reg" placeholder="Confirm Password"><br><br>
                   
-                      <ons-button class="btn btn-secondary" id = "btnSignUp" >Register</ons-button>
+                      <ons-button class="regConfirm" onclick="register()">Register</ons-button>
                   </div>
               </div>
             </div>
