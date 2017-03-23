@@ -21,13 +21,22 @@ var register = function() {
   console.log('register fn');
   var id = document.getElementById('reg_id').value;
   var password = document.getElementById('reg_password').value;
+  var re_password = document.getElementById('reg_re_password').value;
   console.log('id: '+id);
   console.log('password: '+password);
-  const auth = firebase.auth();
-  // Sign in
-  const promise = auth.createUserWithEmailAndPassword(id, password);
-  promise.catch(e => console.log(e.message));
-  console.log('promise done');
+  console.log('re_password: '+re_password);
+
+  if (password == re_password) {
+    const auth = firebase.auth();
+    // Sign in
+    const promise = auth.createUserWithEmailAndPassword(id, password);
+    promise.catch(e => console.log(e.message));
+    error_msg.color = "#badcef";
+    console.log('promise done');
+  } else {
+    var error_msg = document.getElementById('reg_error_msg');
+    error_msg.color = "#ff0000";
+  }
 };
 
 ons.ready(function() {
