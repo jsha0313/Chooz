@@ -4,12 +4,65 @@ var login = function() {
   var password = document.getElementById('log_password').value;
   console.log('log_id: '+id);
   console.log('log_password: '+password);
-  const auth = firebase.auth();
+
   // Sign in
-  const promise = auth.signInWithEmailAndPassword(id, password);
-  promise.catch(e => console.log(e.message));
-  console.log('promise done');
+  firebase.auth().signInWithEmailAndPassword(id, password)
+    .then(function (user) {
+      console.log('got user', user);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 };
+
+var facebookLogin = function() {
+  console.log('clicking facebook login');
+  var provider = new firebase.auth.FacebookAuthProvider();
+
+  firebase.auth().signInWithPopup(provider)
+    .then(function(result) {
+      // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+      var token = result.credential.accessToken;
+      console.log(token);
+      // The signed-in user info.
+      var user = result.user;
+      console.log(user);
+    }).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+  });
+}
+
+var googleLogin = function() {
+  console.log('clicking google login');
+  var provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider)
+    .then(function(result) {
+    // This gives you a Google Access Token. You can use it to access the Google API.
+    var token = result.credential.accessToken;
+    // The signed-in user info.
+    var user = result.user;
+    console.log(token);
+    console.log(user);
+    // ...
+    }).catch(function(error) {
+      console.log(error);
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+    });
+}
 
 var anonLogin = function() {
   console.log('anonLogin fn');
@@ -26,6 +79,8 @@ var register = function() {
   console.log('password: '+password);
   console.log('re_password: '+re_password);
 
+  var error_msg = document.getElementById('reg_error_msg');  
+
   if (password == re_password) {
     const auth = firebase.auth();
     // Sign in
@@ -34,15 +89,16 @@ var register = function() {
     error_msg.color = "#badcef";
     console.log('promise done');
   } else {
-    var error_msg = document.getElementById('reg_error_msg');
     error_msg.color = "#ff0000";
   }
 };
 
 ons.ready(function() {
+  console.log('ons.ready firing');
   // Onsen UI is now initialized
   //ons.notification.alert('Onsen ready');
     document.addEventListener('init', function(event) {
+      console.log('event listener added');
       var page = event.target;
       
       if (page.id === 'login') {
@@ -53,8 +109,7 @@ ons.ready(function() {
         page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
       }
     });
-   
-}());
+});
 
 // (function(){   
   
@@ -77,3 +132,6 @@ ons.ready(function() {
 //     }
 //   });
 // });
+
+
+
