@@ -66,8 +66,14 @@ var googleLogin = function() {
 
 var anonLogin = function() {
   console.log('anonLogin fn');
-  firebase.auth().signInAnonymously();
-  console.log('anonLogged in success');
+  firebase.auth().signInAnonymously().catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+    console.log('errorCode: '+ errorCode);
+  console.log('errorMessgae: '+ errorMessage);
+  });
+
 };
 
 var register = function() {
@@ -92,7 +98,38 @@ var register = function() {
     error_msg.color = "#ff0000";
   }
 };
+// var Location = function(){
+//   console.log('location fn');
+//   if(zipcode){
+//   var locatinOn = false;
+//   console.log('location Off');
+// }else{
+//   var locatinOn = true;
+//   console.log('location On');
+// }
+// };
 
+var tipNbudget = function(){
+  // Location();
+  var zipcode = document.getElementById('zipcode').value;
+  if(typeof(zipcode)=='undefined'){
+    console.log('undefined zipcode');
+    zipcode = '63130'; // TO FIX: USE GOOGLE API TO ADJUST TO CURRENT LOCATION
+  }
+  var tip = document.getElementById('tip').value;
+  var budget = document.getElementById('budget').value;
+  console.log('zipcode: ' + zipcode);
+  console.log('tip: ' + tip);
+  console.log('budget: ' + budget);
+  
+  // var submitBtn = document.getElementsByClassName("tipNbudgetConfirm");
+  // console.log('submitBtn: ' + submitBtn);
+  // submitBtn.addEventListener("click", function(){myNav.pushPage('search.html')}, false);
+
+};
+// var location = function(){
+//   console.log("location");
+// };
 ons.ready(function() {
   console.log('ons.ready firing');
   // Onsen UI is now initialized
@@ -108,6 +145,22 @@ ons.ready(function() {
       } else if (page.id === 'register') {
         page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
       }
+      if (page.id === 'login') {
+        page.querySelector('#anonLoginButton').onclick = function() {
+          document.querySelector('#myNav').pushPage('location.html', {data: {title: 'Location'}});
+        };
+      }
+      if (page.id === 'location') {
+        page.querySelector('#allowLocationButton').onclick = function() {
+          document.querySelector('#myNav').pushPage('tipNbudgetW/location.html', {data: {title: 'tipNbudget'}});
+        };
+        page.querySelector('#notAllowLocationButton').onclick = function() {
+          document.querySelector('#myNav').pushPage('tipNbudgetW/Olocation.html', {data: {title: 'tipNbudget'}});
+        };
+      }
+      if(page.id === 'tipNbudgetW/location' || page.id==='tipNbudgetW/Olocation'){
+        document.querySelector('#myNav').pushPage('search.html', {data: {title: 'search'}});
+      };
     });
 });
 
@@ -132,6 +185,3 @@ ons.ready(function() {
 //     }
 //   });
 // });
-
-
-
