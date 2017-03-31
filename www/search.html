@@ -2,76 +2,75 @@
 <html>
 
 <head>
-  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-  <meta charset="utf-8">
-  <style>
-    /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-    
-    #map {
-      height: 100%;
-    }
-    /* Optional: Makes the sample page fill the window. */
-    
-    html,
-    body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-  </style>
-  <!--  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"> -->
-  <link rel="stylesheet" href="lib/onsen/css/onsenui.css" />
-  <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.css" />
+    <title>
+        Search Restaurant
+    </title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+        #map {
+            height: 100%;
+        }
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 
-  <link rel="stylesheet" href="css/index.css" />
+    <!--  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"> -->
+    <link rel="stylesheet" href="lib/onsen/css/onsenui.css" />
+    <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.css" />
 
-  <!--    Fonts-->
-  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="css/index.css" />
+
+    <!--    Fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
 
-  <script src="https://www.gstatic.com/firebasejs/3.7.3/firebase.js"></script>
-  <script>
-    // Initialize Firebase
-    var config = {
-      apiKey: "AIzaSyCklt4gW7mBR4lV-IIKezeTPXHYF28L7Jg",
-      authDomain: "chooz-bd8c2.firebaseapp.com",
-      databaseURL: "https://chooz-bd8c2.firebaseio.com",
-      storageBucket: "chooz-bd8c2.appspot.com",
-      messagingSenderId: "623847355109"
-    };
-    firebase.initializeApp(config);
+    <script src="https://www.gstatic.com/firebasejs/3.7.3/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCklt4gW7mBR4lV-IIKezeTPXHYF28L7Jg",
+            authDomain: "chooz-bd8c2.firebaseapp.com",
+            databaseURL: "https://chooz-bd8c2.firebaseio.com",
+            storageBucket: "chooz-bd8c2.appspot.com",
+            messagingSenderId: "623847355109"
+        };
+        firebase.initializeApp(config);
 
-  </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD7m5lD3fCCz61cJY6McEyp3tv8WdL3Gg&callback=initMap"
-    type="text/javascript"></script>
-  <script src="lib/onsen/js/onsenui.js"></script>
-  <!--    <script type="text/javascript" src="cordova.js"></script> Future Use for Cordova Plugins-->
-  <script type="text/javascript" src="js/index.js"></script>
-  <title>Chooz</title>
+    </script>
+    <script src="lib/onsen/js/onsenui.js"></script>
+    <!--    <script type="text/javascript" src="cordova.js"></script> Future Use for Cordova Plugins-->
+    <script type="text/javascript" src="js/index.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD7m5lD3fCCz61cJY6McEyp3tv8WdL3Gg&callback=initMap"
+        type="text/javascript"></script>
 </head>
 
 <body onload="initMap()">
-  <ons-navigator animaition="slide" id="myNav" page="search.html" var="myNav"></ons-navigator>
-  <ons-toolbar>
-    <div class="left">
-      <ons-back-button>Back</ons-back-button>
-    </div>
-    <div class="center">Budget Bar</div>
-    <ons-progress-bar value="10"></ons-progress-bar>
-    <div class="right">
-      <ons-button>Settings</ons-button>
-    </div>
-  </ons-toolbar><br><br><br>
-  <div class="center">
-    Search Restaurant
+    
 
-  </div><br>
-  <input type="search" id="restaurant" class="restaurant" placeholder="Type name of the restaurant">
-  <ons-button class="searchBtn" id="searchButton" onclick="search()">Search</ons-button>
-  <div id="map"></div>
-
-
+    <ons-navigator animaition="slide" id="myNav" page="search.html" var="myNav"></ons-navigator>
+    
+    <ons-template id="search.html">
+    <ons-toolbar>
+        <div class="left">
+            <ons-back-button>Back</ons-back-button>
+        </div>
+        <ons-progress-bar value="10"></ons-progress-bar>
+        <div class="center">Budget Bar</div>
+        <div class="right">
+            <ons-button class="settingBtn" id="settingButton" onclick="setting();">Setting</ons-button>
+        </div>
+    </ons-toolbar>
+    <div class="center">Search Restaurant</div> <br>
+    <input type="search" id="restaurant" class="restaurant" placeholder="Type name of the restaurant">
+    <ons-button class="searchBtn" id="searchButton" onclick="search()">Search</ons-button>
+    <div id="map"></div>
+    </ons-template>
 </body>
 
 </html>

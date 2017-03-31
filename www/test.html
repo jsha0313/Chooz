@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" ng-app="app">
 
 <head>
     <meta charset="utf-8">
@@ -12,7 +12,6 @@
     <!--    Fonts-->
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
-
     <script src="https://www.gstatic.com/firebasejs/3.7.3/firebase.js"></script>
     <script>
         // Initialize Firebase
@@ -24,8 +23,10 @@
             messagingSenderId: "623847355109"
         };
         firebase.initializeApp(config);
-
     </script>
+    <!--<script src="lib/angular/angular.min.js"></script>-->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD7m5lD3fCCz61cJY6McEyp3tv8WdL3Gg&callback=initMap"
+        type="text/javascript"></script>
     <script src="lib/onsen/js/onsenui.js"></script>
     <!--    <script type="text/javascript" src="cordova.js"></script> Future Use for Cordova Plugins-->
     <script type="text/javascript" src="js/index.js"></script>
@@ -108,16 +109,17 @@
                 <div class="left">
                     <ons-back-button>Back</ons-back-button>
                 </div>
+                <!--<div class="right"><ons-button id="searchBton" onclick="myNav.pushPage('search.html');">Search Restaurant</ons-button></div>-->
                 <div class="center"></div>
             </ons-toolbar>
             <div class="loginOuter">
                 <div class="loginMid">
                     <div class="loginInner">
-                        <form>
+                        <form action="search.html">
                             <input type="number" class="tipNbudget" id="tip" placeholder="Tip %"><br>
                             <input type="number" class="tipNbudget" id="budget" placeholder="Budget"><br>
-                            <ons-button class="tipNbudgetConfirm" id="zipcode" onclick="tipNbudget()">Submit</ons-button>
-                            <a href="search.html">Submit</a>
+                            <ons-button class="tipNbudgetConfirm" id="zipcode" onclick="tipNbudget(); myNav.pushPage('search.html'); initMap()">Submit</ons-button>
+                            <button>submit</button>
                         </form>
                     </div>
                 </div>
@@ -139,12 +141,48 @@
                         <input type="number" class="zipcode" id="zipcode" placeholder="Zip Code"><br>
                         <input type="number" class="tipNbudget" id="tip" placeholder="Tip %"><br>
                         <input type="number" class="tipNbudget" id="budget" placeholder="Budget"><br>
-                        <ons-button class="tipNbudgetConfirm" onclick="tipNbudget()">Submit</ons-button>
-                        <a href="search.html">Submit</a>
+                        <ons-button class="tipNbudgetConfirm" onclick="tipNbudget(); myNav.pushPage('search.html'); initMap()">Submit</ons-button>
+                        <a href="search.html">submit</a>
                     </div>
                 </div>
             </div>
         </ons-page>
+    </ons-template>
+
+    <ons-template id="search.html">
+        <!--<ons-page id="search" class="blueBackground">
+            <div class="loginOuter">
+                <div class="loginMid">  
+                    <div class="loginInner">-->
+
+
+        <!--<script type="text/ons-template" id="search.html">-->
+        <!--<script>
+            initMap();
+        </script>-->
+
+        <ons-toolbar>
+            <div class="left">
+                <ons-back-button>Back</ons-back-button>
+            </div>
+            <ons-progress-bar value="10"></ons-progress-bar>
+            <div class="center">Budget Bar</div>
+            <div class="right">
+                <ons-button class="settingBtn" id="settingButton" onclick="setting();">Setting</ons-button>
+            </div>
+        </ons-toolbar>
+        <div id="map"></div>
+
+        <div class="center">Search Restaurant</div> <br>
+        <input type="search" id="restaurant" class="restaurant" placeholder="Type name of the restaurant">
+        <ons-button class="searchBtn" id="searchButton" onclick="search()">Search</ons-button>
+
+        <!--</script>-->
+
+        <!--</div>
+                </div>
+            </div>
+        </ons-page>-->
     </ons-template>
 
 </body>
