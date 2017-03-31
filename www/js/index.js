@@ -35,7 +35,6 @@ var facebookLogin = function () {
       var email = error.email;
       // The firebase.auth.AuthCredential type that was used.
       var credential = error.credential;
-      console.log(error)
       // ...
     });
 }
@@ -99,8 +98,19 @@ var register = function () {
     error_msg.color = "#ff0000";
   }
 };
+// var Location = function(){
+//   console.log('location fn');
+//   if(zipcode){
+//   var locatinOn = false;
+//   console.log('location Off');
+// }else{
+//   var locatinOn = true;
+//   console.log('location On');
+// }
+// };
 
 var tipNbudget = function () {
+  // Location();
   var zipcode = document.getElementById('zipcode').value;
   if (typeof (zipcode) == 'undefined') {
     console.log('undefined zipcode');
@@ -111,7 +121,15 @@ var tipNbudget = function () {
   console.log('zipcode: ' + zipcode);
   console.log('tip: ' + tip);
   console.log('budget: ' + budget);
+
+
 };
+
+
+// Note: This example requires that you consent to location sharing when
+// prompted by your browser. If you see the error "The Geolocation service
+// failed.", it means you probably did not give permission for the browser to
+// locate you.
 
 var initMap = function () {
   var map = new google.maps.Map(document.getElementById('map'), {
@@ -127,7 +145,7 @@ var initMap = function () {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
-      console.log('lat: ' + position.coords.latitude + ' long: ' + position.coords.longitude);
+
       infoWindow.setPosition(pos);
       infoWindow.setContent('Location found.');
       map.setCenter(pos);
