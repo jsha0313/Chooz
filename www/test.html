@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en" ng-app="app">
 
 <head>
@@ -25,8 +25,19 @@
         firebase.initializeApp(config);
     </script>
     <!--<script src="lib/angular/angular.min.js"></script>-->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD7m5lD3fCCz61cJY6McEyp3tv8WdL3Gg&callback=initMap"
-        type="text/javascript"></script>
+    <style>
+        #map {
+            height: 100%;
+        }
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
     <script src="lib/onsen/js/onsenui.js"></script>
     <!--    <script type="text/javascript" src="cordova.js"></script> Future Use for Cordova Plugins-->
     <script type="text/javascript" src="js/index.js"></script>
@@ -42,6 +53,7 @@
                 <div class="loginMid">
                     <div class="loginInner">
                         <h1>Chooz</h1><br><br>
+                        <div id="error"></div>
                         <div>
                             <input type="email" id="log_id" class="id" placeholder="Email"><br>
                             <input type="password" id="log_password" class="password" placeholder="Password"><br><br>
@@ -115,10 +127,11 @@
             <div class="loginOuter">
                 <div class="loginMid">
                     <div class="loginInner">
+                        <h2> Let us know your... </h2>
                         <form action="search.html">
                             <input type="number" class="tipNbudget" id="tip" placeholder="Tip %"><br>
                             <input type="number" class="tipNbudget" id="budget" placeholder="Budget"><br>
-                            <ons-button class="tipNbudgetConfirm" id="zipcode" onclick="tipNbudget(); myNav.pushPage('search.html'); initMap()">Submit</ons-button>
+                            <ons-button class="tipNbudgetConfirm" id="confirm" onclick="myNav.pushPage('search.html');">Submit</ons-button>
                             <button>submit</button>
                         </form>
                     </div>
@@ -138,10 +151,12 @@
             <div class="loginOuter">
                 <div class="loginMid">
                     <div class="loginInner">
+                        <h2> Let us know your... </h2>
+                        <div id="map"></div>
                         <input type="number" class="zipcode" id="zipcode" placeholder="Zip Code"><br>
                         <input type="number" class="tipNbudget" id="tip" placeholder="Tip %"><br>
                         <input type="number" class="tipNbudget" id="budget" placeholder="Budget"><br>
-                        <ons-button class="tipNbudgetConfirm" onclick="tipNbudget(); myNav.pushPage('search.html'); initMap()">Submit</ons-button>
+                        <ons-button class="tipNbudgetConfirm" id="confirm" onclick="myNav.pushPage('search.html');">Submit</ons-button>
                         <a href="search.html">submit</a>
                     </div>
                 </div>
@@ -186,5 +201,7 @@
     </ons-template>
 
 </body>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD7m5lD3fCCz61cJY6McEyp3tv8WdL3Gg&callback=initMap"
+        type="text/javascript"></script>
 
 </html>

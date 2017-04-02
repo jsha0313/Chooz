@@ -1,3 +1,19 @@
+/*
+  helper function to decode error message for
+  login from Facebook, Google, and our login page
+
+  @params object error
+*/
+var displayError = function(error) {
+  var message = "An error has occurred. Please try again.";
+
+    if ( error.hasOwnProperty('message') ) { 
+      message = error.message;
+    }
+
+    return message;
+}
+
 var login = function () {
   console.log('login fn');
   var id = document.getElementById('log_id').value;
@@ -8,10 +24,10 @@ var login = function () {
   // Sign in
   firebase.auth().signInWithEmailAndPassword(id, password)
     .then(function (user) {
-      console.log('got user', user);
+      document.querySelector('#myNav').pushPage('location.html', { data: { title: 'Location' } });
     })
     .catch(function (error) {
-      console.log(error);
+      document.getElementById("error").innerHTML = displayError(error);
     });
 };
 
@@ -23,20 +39,11 @@ var facebookLogin = function () {
     .then(function (result) {
       // This gives you a Facebook Access Token. You can use it to access the Facebook API.
       var token = result.credential.accessToken;
-      console.log(token);
       // The signed-in user info.
       var user = result.user;
-      console.log(user);
-  
+      document.querySelector('#myNav').pushPage('location.html', { data: { title: 'Location' } });
     }).catch(function (error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // The email of the user's account used.
-      var email = error.email;
-      // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
-      // ...
+      document.getElementById("error").innerHTML = displayError(error);
     });
 }
 
@@ -49,30 +56,18 @@ var googleLogin = function () {
       var token = result.credential.accessToken;
       // The signed-in user info.
       var user = result.user;
-      console.log(token);
-      console.log(user);
-      // ...
+      document.querySelector('#myNav').pushPage('location.html', { data: { title: 'Location' } });
     }).catch(function (error) {
-      console.log(error);
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // The email of the user's account used.
-      var email = error.email;
-      // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
-      // ...
+      document.getElementById("error").innerHTML = displayError(error);
     });
 }
 
 var anonLogin = function () {
   console.log('anonLogin fn');
   firebase.auth().signInAnonymously().catch(function (error) {
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
     console.log('errorCode: ' + errorCode);
     console.log('errorMessgae: ' + errorMessage);
+    document.getElementById("error").innerHTML = displayError(error);
   });
 
 };
@@ -95,6 +90,8 @@ var register = function () {
     promise.catch(e => console.log(e.message));
     error_msg.color = "#badcef";
     console.log('promise done');
+
+    document.querySelector('#myNav').pushPage('location.html', { data: { title: 'Location' } });
   } else {
     error_msg.color = "#ff0000";
   }
@@ -110,29 +107,109 @@ var register = function () {
 // }
 // };
 
+/*
+  get zipcode, tip, and budget amount
+  from user input, and do calculations
+  based on determined sales tax
+*/
 var tipNbudget = function () {
+  console.log('tip n budget function');
   // Location();
-  var zipcode = document.getElementById('zipcode').value;
-  if (typeof (zipcode) == 'undefined') {
-    console.log('undefined zipcode');
-    zipcode = '63130'; // TO FIX: USE GOOGLE API TO ADJUST TO CURRENT LOCATION
+
+  var zipcode = document.getElementById('zipcode'); 
+  var locationOff = document.body.contains(zipcode);
+  var salesTax = 0;
+
+  if (!locationOff) {
+    console.log('user enabled location services');
+
+    getZipcode( function (res) {
+      /* 
+        use a callback function so that
+        this function does not go on until
+        response returned
+      */
+      salesTax = getSalesTax(res.long_name);
+    });
+  } else {
+    salesTax = getSalesTax(zipcode.value);
   }
-  var tip = document.getElementById('tip').value;
-  var budget = document.getElementById('budget').value;
-  console.log('zipcode: ' + zipcode);
-  console.log('tip: ' + tip);
-  console.log('budget: ' + budget);
 
-
+  console.log('salestax', salesTax);
+  // getZipcode( function(res) {
+  //   console.log('inside callback');
+  //   console.log(res);
+  //     var tip = document.getElementById('tip').value;
+  //     var budget = document.getElementById('budget').value;
+  //     zipcode = res.long_name;
+  // } );
 };
 
+/*
+  helper function called in tipNbudget()
+  to get sales tax based on zipcode
+
+  @params - String zipcode
+*/
+var getSalesTax = function(zipcode) {
+  var xhr = new XMLHttpRequest();
+  xhr.withCredentials = true;
+
+  xhr.addEventListener("readystatechange", function () {
+    if (this.readyState === 4) {
+      console.log(this.responseText);
+    }
+  });
+
+  var apiKey = "Tqr5gkFA6OnIbeAcMGOSywDuuim5yPZenHP+fwiXTHPA0rUiTLxksbRHQj9m+GvkYCibsdDVhuiaoFEr/7aGOg==";
+  var url = "https://taxrates.api.avalara.com:443/postal?country=usa&postal=" + zipcode + "&apikey=" + apiKey;
+// TODO: CORS
+  xhr.open("GET", url);
+  xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+  xhr.setRequestHeader("Access-Control-Allow-Credentials", true);
+  xhr.setRequestHeader("cache-control", "no-cache");  
+  xhr.send();
+}
+
+/*
+  helper function called in tipNbudget()
+  to use reverse geolocation to get zipcode
+  if user has enabled location services
+
+  @params - function callback
+*/
+var getZipcode = function(callback) {
+  var geocoder = new google.maps.Geocoder;
+
+  if ( navigator.geolocation ) {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      // console.log(position.address.postalCode);
+      console.log(position);
+      var pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };      
+      geocoder.geocode({'location': pos}, function(result, status) {
+        if ( status === 'OK') {
+          if ( result[0] ) {
+            let postalCode = result[0].address_components.find(function (component) {
+                return component.types[0] == "postal_code";
+            });
+            callback(postalCode);
+          }
+        }
+      });
+    });
+  }
+}
 
 // Note: This example requires that you consent to location sharing when
 // prompted by your browser. If you see the error "The Geolocation service
 // failed.", it means you probably did not give permission for the browser to
 // locate you.
 
-var initMap = function () {
+var initMap = function (bool = false) {
+  if (!bool) return;
   var map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: -34.397, lng: 150.644 },
     zoom: 6
@@ -171,8 +248,8 @@ ons.ready(function () {
   // Onsen UI is now initialized
   //ons.notification.alert('Onsen ready');
   document.addEventListener('init', function (event) {
-    console.log('event listener added');
     var page = event.target;
+    console.log('event listener added', page);
 
     if (page.id === 'login') {
       page.querySelector('#registerButton').onclick = function () {
@@ -181,6 +258,7 @@ ons.ready(function () {
     } else if (page.id === 'register') {
       page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
     }
+
     if (page.id === 'login') {
       page.querySelector('#anonLoginButton').onclick = function () {
         document.querySelector('#myNav').pushPage('location.html', { data: { title: 'Location' } });
@@ -188,6 +266,7 @@ ons.ready(function () {
     }
     if (page.id === 'location') {
       page.querySelector('#allowLocationButton').onclick = function () {
+        console.log('allow location button clicked');
         document.querySelector('#myNav').pushPage('tipNbudgetW/location.html', { data: { title: 'tipNbudget' } });
       };
       page.querySelector('#notAllowLocationButton').onclick = function () {
@@ -195,7 +274,15 @@ ons.ready(function () {
       };
     }
     if (page.id === 'tipNbudgetW/location' || page.id === 'tipNbudgetW/Olocation') {
-      document.querySelector('#myNav').pushPage('search.html', { data: { title: 'search' } });
+      console.log('tip n budget');
+      page.querySelector('#confirm').onclick = function() {
+        document.querySelector('#myNav')
+          .pushPage('search.html', { data: { title: 'search' } })
+          .then(function () {
+            initMap(true);
+            tipNbudget();
+          });
+      }
     };
   });
 });
