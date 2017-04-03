@@ -1,66 +1,207 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" ng-app="app">
+
 <head>
     <meta charset="utf-8">
     <!--  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"> -->
-    <link rel="stylesheet" href="lib/onsen/css/onsenui.css"/>
-    <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.css"/>
-    
-    <link rel="stylesheet" href="css/index.css"/>
-    
+    <link rel="stylesheet" href="lib/onsen/css/onsenui.css" />
+    <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.css" />
+
+    <link rel="stylesheet" href="css/index.css" />
+
     <!--    Fonts-->
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    
-    
+
+    <script src="https://www.gstatic.com/firebasejs/3.7.3/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCklt4gW7mBR4lV-IIKezeTPXHYF28L7Jg",
+            authDomain: "chooz-bd8c2.firebaseapp.com",
+            databaseURL: "https://chooz-bd8c2.firebaseio.com",
+            storageBucket: "chooz-bd8c2.appspot.com",
+            messagingSenderId: "623847355109"
+        };
+        firebase.initializeApp(config);
+    </script>
+    <!--<script src="lib/angular/angular.min.js"></script>-->
+    <style>
+        #map {
+            height: 100%;
+        }
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
     <script src="lib/onsen/js/onsenui.js"></script>
-<!--    <script type="text/javascript" src="cordova.js"></script> Future Use for Cordova Plugins-->
+    <!--    <script type="text/javascript" src="cordova.js"></script> Future Use for Cordova Plugins-->
     <script type="text/javascript" src="js/index.js"></script>
     <title>Chooz</title>
 </head>
-    
+
 <body>
     <ons-navigator animaition="slide" id="myNav" page="login.html" var="myNav"></ons-navigator>
-    
+
     <ons-template id="login.html">
         <ons-page id="login" class="blueBackground">
             <div class="loginOuter">
-                <div class="loginMid">  
+                <div class="loginMid">
                     <div class="loginInner">
                         <h1>Chooz</h1><br><br>
+                        <div id="error"></div>
                         <div>
-                        <input type="text" id="id" class="id" placeholder="Email"><br>
-                        <input type="text" id="password" class="password" placeholder="Password"><br><br>
+                            <input type="email" id="log_id" class="id" placeholder="Email"><br>
+                            <input type="password" id="log_password" class="password" placeholder="Password"><br><br>
                         </div>
-                        <ons-button class="loginBtn" onclick="login()">Login</ons-button>
-                        <ons-button class="guestBtn">Guest</ons-button><br>
+                        <ons-button class="loginBtn" id="loginButton" onclick="login()">Login</ons-button>
+                        <ons-button class="guestBtn" id="anonLoginButton" onclick="anonLogin()">Guest</ons-button><br>
+                        <ons-button class="facebookBtn" onclick="facebookLogin()">Login With Facebook</ons-button><br>
+                        <ons-button class="googbtn" onclick="googleLogin()">Login With Google</ons-button><br>
                         <ons-button class="regBtn" id="registerButton" onclick="myNav.pushPage('register.html');">Not a Member? Click Here to Register</ons-button>
                     </div>
                 </div>
             </div>
         </ons-page>
+
     </ons-template>
-    
-    
+
     <ons-template id="register.html">
         <ons-page id="register">
             <ons-toolbar>
-              <div class="left"><ons-back-button>Back</ons-back-button></div>
-              <div class="center"></div>
+                <div class="left">
+                    <ons-back-button>Back</ons-back-button>
+                </div>
+                <div class="center"></div>
             </ons-toolbar>
             <div class="loginOuter">
-              <div class="loginMid">
-                  <div class="loginInner">    
-                      <input class="reg" placeholder="Full Name"><br>
-                      <input class="reg" placeholder="Email Address"><br>
-                      <input class="reg" placeholder="Password"><br>
-                      <input class="reg" placeholder="Confirm Password"><br><br>
-                  
-                      <ons-button class="regConfirm" onclick="myNav.popPage()">Register</ons-button>
-                  </div>
-              </div>
+                <div class="loginMid">
+                    <div class="loginInner">
+                        <input class="reg" placeholder="Full Name"><br>
+                        <input type="email" class="reg" id="reg_id" placeholder="Email"><br>
+                        <input type="password" class="reg" id="reg_password" placeholder="Password"><br>
+                        <input type="password" class="reg" id="reg_re_password" placeholder="Confirm Password"><br>
+                        <font color=#badcef size="2" id="reg_error_msg">Password does not match</font><br>
+
+                        <ons-button class="regConfirm" onclick="register()">Register</ons-button>
+                    </div>
+                </div>
             </div>
         </ons-page>
     </ons-template>
 
+    <ons-template id="location.html">
+        <ons-page id="location">
+            <ons-toolbar>
+                <div class="left">
+                    <ons-back-button>Back</ons-back-button>
+                </div>
+                <div class="center"></div>
+            </ons-toolbar>
+            <div class="loginOuter">
+                <div class="loginMid">
+                    <div class="loginInner">
+                        <i class="fa fa-map-marker" style="font-size:48px"></i>
+                        <h1>Allow Location Service?</h1><br><br>
+                        <ons-button class="location" id="allowLocationButton" onclick="myNav.pushPage('tipNbudgetW/location.html');">Yes</ons-button>
+                        <ons-button class="location" id="notAllowLocationButton" onclick="myNav.pushPage('tipNbudgetW/Olocation.html');">No</ons-button>
+                    </div>
+                </div>
+            </div>
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="tipNbudgetW/location.html">
+        <ons-page id="tipNbudgetW/location">
+            <ons-toolbar>
+                <div class="left">
+                    <ons-back-button>Back</ons-back-button>
+                </div>
+                <!--<div class="right"><ons-button id="searchBton" onclick="myNav.pushPage('search.html');">Search Restaurant</ons-button></div>-->
+                <div class="center"></div>
+            </ons-toolbar>
+            <div class="loginOuter">
+                <div class="loginMid">
+                    <div class="loginInner">
+                        <h2> Let us know your... </h2>
+                        <form action="search.html">
+                            <input type="number" class="tipNbudget" id="tip" placeholder="Tip %"><br>
+                            <input type="number" class="tipNbudget" id="budget" placeholder="Budget"><br>
+                            <ons-button class="tipNbudgetConfirm" id="confirm" onclick="myNav.pushPage('search.html');">Submit</ons-button>
+                            <button>submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="tipNbudgetW/Olocation.html">
+        <ons-page id="tipNbudgetW/Olocation">
+            <ons-toolbar>
+                <div class="left">
+                    <ons-back-button>Back</ons-back-button>
+                </div>
+                <div class="center"></div>
+            </ons-toolbar>
+            <div class="loginOuter">
+                <div class="loginMid">
+                    <div class="loginInner">
+                        <h2> Let us know your... </h2>
+                        <div id="map"></div>
+                        <input type="number" class="zipcode" id="zipcode" placeholder="Zip Code"><br>
+                        <input type="number" class="tipNbudget" id="tip" placeholder="Tip %"><br>
+                        <input type="number" class="tipNbudget" id="budget" placeholder="Budget"><br>
+                        <ons-button class="tipNbudgetConfirm" id="confirm" onclick="myNav.pushPage('search.html');">Submit</ons-button>
+                        <a href="search.html">submit</a>
+                    </div>
+                </div>
+            </div>
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="search.html">
+        <!--<ons-page id="search" class="blueBackground">
+            <div class="loginOuter">
+                <div class="loginMid">  
+                    <div class="loginInner">-->
+
+
+        <!--<script type="text/ons-template" id="search.html">-->
+        <!--<script>
+            initMap();
+        </script>-->
+
+        <ons-toolbar>
+            <div class="left">
+                <ons-back-button>Back</ons-back-button>
+            </div>
+            <ons-progress-bar value="10"></ons-progress-bar>
+            <div class="center">Budget Bar</div>
+            <div class="right">
+                <ons-button class="settingBtn" id="settingButton" onclick="setting();">Setting</ons-button>
+            </div>
+        </ons-toolbar>
+        <div id="map"></div>
+
+        <div class="center">Search Restaurant</div> <br>
+        <input type="search" id="restaurant" class="restaurant" placeholder="Type name of the restaurant">
+        <ons-button class="searchBtn" id="searchButton" onclick="search()">Search</ons-button>
+
+        <!--</script>-->
+
+        <!--</div>
+                </div>
+            </div>
+        </ons-page>-->
+    </ons-template>
+
 </body>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD7m5lD3fCCz61cJY6McEyp3tv8WdL3Gg&callback=initMap"
+        type="text/javascript"></script>
+
 </html>

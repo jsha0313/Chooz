@@ -59,3 +59,7 @@ h1{
 .regConfirm{
     background-color: #3EC9FF;
 }
+
+#error {
+    color: red;
+}
