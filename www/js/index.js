@@ -152,16 +152,12 @@ var tipNbudget = function () {
   @params - String zipcode
 */
 var getSalesTax = function(zipcode) {
-<<<<<<< HEAD
   console.log('get sales tax function');
-=======
->>>>>>> origin/master
   var xhr = new XMLHttpRequest();
   xhr.withCredentials = true;
 
   xhr.addEventListener("readystatechange", function () {
     if (this.readyState === 4) {
-<<<<<<< HEAD
       var data = JSON.parse(this.responseText);
       console.log(data);
     }
@@ -170,18 +166,6 @@ var getSalesTax = function(zipcode) {
   var url = "/tax?zipcode=" + zipcode;
 
   xhr.open("GET", url);
-=======
-      console.log(this.responseText);
-    }
-  });
-
-  var apiKey = "Tqr5gkFA6OnIbeAcMGOSywDuuim5yPZenHP+fwiXTHPA0rUiTLxksbRHQj9m+GvkYCibsdDVhuiaoFEr/7aGOg==";
-  var url = "https://taxrates.api.avalara.com:443/postal?country=usa&postal=" + zipcode + "&apikey=" + apiKey;
-// TODO: CORS
-  xhr.open("GET", url);
-  xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
-  xhr.setRequestHeader("Access-Control-Allow-Credentials", true);
->>>>>>> origin/master
   xhr.setRequestHeader("cache-control", "no-cache");  
   xhr.send();
 }
