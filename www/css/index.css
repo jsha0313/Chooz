@@ -11,6 +11,95 @@ h1{
     color: white;
 }
 
+h3{
+    text-align: center;
+    font-size: 50px;
+    color: white;
+}
+
+h3:before, h3:after {
+  content: attr(data-heading);
+  position: absolute;
+  overflow: hidden;
+  width: 100%;
+  z-index: 5;
+  left: 112.75%;
+  -webkit-transform: translate(-48.45%, 0);
+          transform: translate(-48.45%, 0);
+  text-align: left;
+}
+h3:before {
+  color: #bbdef0;
+  text-shadow: -1px -1px 0 #bbdef0, 1px -1px 0 #bbdef0, -1px 1px 0 #bbdef0, 1px 1px 0 #bbdef0, -2px -2px 0 #bbdef0, 2px -2px 0 #bbdef0, -2px 2px 0 #bbdef0, 2px 2px 0 #bbdef0, -3px -3px 0 #bbdef0, 3px -3px 0 #bbdef0, -3px 3px 0 #bbdef0, 3px 3px 0 #bbdef0, -4px -4px 0 #bbdef0, 4px -4px 0 #bbdef0, 4px 4px 0 #bbdef0, 4px 4px 0 #bbdef0, -5px -5px 0 #bbdef0, 5px -5px 0 #bbdef0, 5px 5px 0 #bbdef0, 5px 5px 0 #bbdef0, -6px -6px 0 #bbdef0, 6px -6px 0 #bbdef0, 6px 6px 0 #bbdef0, 6px 6px 0 #bbdef0;
+}
+h3:after {
+  color: #3EC9FF;
+  -webkit-transform: translate(-48.45%, -3000px);
+          transform: translate(-48.45%, -3000px);
+  -webkit-animation: bounceInDown .8s 3s ease-in-out forwards;
+          animation: bounceInDown .8s 3s ease-in-out forwards;
+/*  text-shadow: 0 0 3px rgba(0, 0, 0, 0.2);*/
+}
+
+@-webkit-keyframes bounceInDown {
+  from, 60%, 75%, 90%, to {
+    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+            animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(-48.45%, -3000px, 0);
+            transform: translate3d(-48.45%, -3000px, 0);
+  }
+  60% {
+    opacity: 1;
+    -webkit-transform: translate3d(-48.45%, 25px, 0);
+            transform: translate3d(-48.45%, 25px, 0);
+  }
+  75% {
+    -webkit-transform: translate3d(-48.45%, -10px, 0);
+            transform: translate3d(-48.45%, -10px, 0);
+  }
+  90% {
+    -webkit-transform: translate3d(-48.45%, 5px, 0);
+            transform: translate3d(-48.45%, 5px, 0);
+  }
+  to {
+    -webkit-transform: translate3d(-48.45%, 0, 0);
+            transform: translate3d(-48.45%, 0, 0);
+  }
+}
+
+@keyframes bounceInDown {
+  from, 60%, 75%, 90%, to {
+    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+            animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(-48.45%, -3000px, 0);
+            transform: translate3d(-48.45%, -3000px, 0);
+  }
+  60% {
+    opacity: 1;
+    -webkit-transform: translate3d(-48.45%, 25px, 0);
+            transform: translate3d(-48.45%, 25px, 0);
+  }
+  75% {
+    -webkit-transform: translate3d(-48.45%, -10px, 0);
+            transform: translate3d(-48.45%, -10px, 0);
+  }
+  90% {
+    -webkit-transform: translate3d(-48.45%, 5px, 0);
+            transform: translate3d(-48.45%, 5px, 0);
+  }
+  to {
+    -webkit-transform: translate3d(-48.45%, 0, 0);
+            transform: translate3d(-48.45%, 0, 0);
+  }
+}
+
+/*Login Page*/
 .loginOuter{
     background-color: #bbdef0;
     display: table;
@@ -27,22 +116,174 @@ h1{
     margin: auto;
 }
 
+.loginRow{
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+/*Location Service Page*/
+h2{
+    text-align: center;
+    font-size: 15px;
+    color: white;
+    
+}
+.locService{
+    display: table-cell;
+    vertical-align: middle;
+    background: url('imgs/blueberry4.jpg') no-repeat; 
+    background-size: cover;
+}
+.locInner{
+    padding-top: 5px;
+    text-align: center;
+    margin: auto;
+    vertical-align: middle;
+    width: 70%;
+    height: 20%;
+    border: 1px solid #ddd;
+}
+
+.location{
+    color: white;
+    background: transparent;
+    border: 1px solid white;
+    top:5px;
+    font-size: 15px;
+}
+
+/*Numbers Page*/
+.numContainer {
+  position: relative;
+  display: inline-block;
+  max-width: 90%x;
+  min-width: 90%;
+    max-height: 70%;
+    min-height: 50%;
+  box-sizing: border-box;
+  padding: 10px 5px;
+  background-color: transparent;
+  border-radius: 20px;
+    border-color: white;
+    border: 1px solid white;
+  margin: 0 0 auto;
+  left: 50%;
+  -moz-transform: translate(-50%, 0);
+  -ms-transform: translate(-50%, 0);
+  -webkit-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+}
+
+
 /*inputs*/
+/*Login Page*/
 .id{
+    border: 0;
+    outline: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
     width: 55%;
+    background: transparent;
 }
 .password{
+    border: 0;
+    outline: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
     width: 55%;
+    background: transparent;
 }
 .reg{
     width: 55%;
 }
+/*Tip Numbers Page*/
+.transition, .numContainer .question label, .numContainer .question input[type="text"] {
+  -moz-transition: all 0.25s cubic-bezier(0.53, 0.01, 0.35, 1.5);
+  -o-transition: all 0.25s cubic-bezier(0.53, 0.01, 0.35, 1.5);
+  -webkit-transition: all 0.25s cubic-bezier(0.53, 0.01, 0.35, 1.5);
+  transition: all 0.25s cubic-bezier(0.53, 0.01, 0.35, 1.5);
+}
 
+.question{
+    position: relative;
+    padding: 10px 0;
+}
+.question:first-of-type {
+  padding-top: 0;
+}
+.question:last-of-type {
+  padding-bottom: 0;
+}
+
+.question label{
+    transform-origin: left center;
+    color: black;
+    font-weight: 200;
+    font-style: bold;
+    letter-spacing: 0.01em;
+    font-size: 17px;
+    box-sizing: border-box;
+    padding: 10px 15px;
+    display: block;
+    position: absolute;
+    margin-top: -40px;
+    z-index: 2;
+    pointer-events: none;
+}
+.question input[type="text"]{
+    appearance: none;
+  background-color: transparent;
+  border: 1px solid white;
+  line-height: 0;
+  font-size: 17px;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  border-radius: 60px;
+  color: white;
+  font-weight: 100;
+  letter-spacing: 0.01em;
+  position: relative;
+  z-index: 1;
+}
+.question input[type="text"]:focus{
+    outline: none;
+    background: #FFFFFF;
+    color: black;
+    margin-top: 30px;
+}
+.question input[type"text"]:valid{
+    margin-top: 15px;
+}
+.question input[type="text"]:focus ~ label{
+    -moz-transform: translate(0, -35px);
+    -ms-transform: translate(0, -35px);
+    -webkit-transform: translate(0, -35px);
+    transform: translate(0, -35px);
+}
+.question input[type="text"]:valid ~ label{
+    text-transform: uppercase;
+    font-style: italic;
+    -moz-transform: translate(5px, -35px) scale(0.6);
+    -ms-transform: translate(5px, -35px) scale(0.6);
+    -webkit-transform: translate(5px, -35px) scale(0.6);
+    transform: translate(5px, -35px) scale(0.6);
+}
+
+
+/*Buttons*/
 .loginBtn{
     background-color: #3EC9FF;
     max-width: 70%;
     max-height: 50%;
 }
+.googbtn{
+    background: transparent;
+    border: none;
+}
+.facebookBtn{
+    background: transparent;
+    border: none;
+}
+
 .guestBtn{
     background-color: #3EC9FF;
     max-width: 70%;
@@ -62,4 +303,16 @@ h1{
 
 #error {
     color: red;
+}
+
+.tipNbudgetConfirm {
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+    border-radius: 20px;
+    border: 1px solid none;
+    width: 70%;
+    background-color: #3EC9FF;
+    color: white;
+    
 }
