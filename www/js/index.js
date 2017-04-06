@@ -207,12 +207,27 @@ var getZipcode = function(callback) {
 // failed.", it means you probably did not give permission for the browser to
 // locate you.
 
+var map;
+var markers = [];
+var infoWindows = [];
 var initMap = function (bool = false) {
   if (!bool) return;
-  var map = new google.maps.Map(document.getElementById('map'), {
+  map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: -34.397, lng: 150.644 },
-    zoom: 6
+    zoom: 12
   });
+  map.setOptions({styles: [
+      {
+        featureType: 'poi.business',
+        stylers: [{visibility: 'off'}]
+      },
+      {
+        featureType: 'transit',
+        elementType: 'labels.icon',
+        stylers: [{visibility: 'off'}]
+      }
+    ]});
+
   var infoWindow = new google.maps.InfoWindow({ map: map });
 
   // Try HTML5 geolocation.
@@ -223,9 +238,10 @@ var initMap = function (bool = false) {
         lng: position.coords.longitude
       };
 
-      infoWindow.setPosition(pos);
-      infoWindow.setContent('Location found.');
+      // infoWindow.setPosition(pos);
+      // infoWindow.setContent('Location found.');
       map.setCenter(pos);
+      updateFQ();
     }, function () {
       handleLocationError(true, infoWindow, map.getCenter());
     });
@@ -233,6 +249,11 @@ var initMap = function (bool = false) {
     // Browser doesn't support Geolocation
     handleLocationError(false, infoWindow, map.getCenter());
   }
+
+  // Update Foursquare locations every time where is a change in the map bounds
+  map.addListener('bounds_changed', function(e) {
+    updateFQ();
+  });
 };
 
 var handleLocationError = function (browserHasGeolocation, infoWindow, pos) {
@@ -286,6 +307,81 @@ ons.ready(function () {
   });
 });
 
+var updateFQ = function() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+         // Action to be performed when the document is read;
+          var response = JSON.parse(xhttp.responseText).response;
+          var objects = response.groups[0].items;
+          console.log(objects);
+          for (var i=0; i<markers.length; i++) {
+            markers[i].setMap(null);
+          }
+          markers = [];
+          for (var i=0; i<objects.length; i++) {
+
+            var marker = new google.maps.Marker({
+              position: {lat: objects[i].venue.location.lat, lng: objects[i].venue.location.lng},
+              map: map,
+              title: objects[i].venue.name,
+            });
+
+            markers.push(marker);
+          }
+
+      }
+  };
+  var date = new Date();
+  var dd = date.getDate();
+  var mm = date.getMonth()+1; //January is 0
+  var yyyy = date.getFullYear();
+  if(dd<10){
+      dd='0'+dd;
+  } 
+  if(mm<10){
+      mm='0'+mm;
+  } 
+  var today = yyyy+mm+dd;
+  var client_id = "VZP5RZFVTJRAPIASNSAEHBOBU12DK3WC4SQQNHZCAG3FAXT2";
+  var client_secret = "XDVSW4E3LHM3NM31BYPOGNSW21MFDXF3BDPJ0YBSPGCGCVQX";
+  var center = map.getCenter().toUrlValue(14);
+  var sw_lat, sw_lon, ne_lat, ne_lon = 0.0;
+  if (map.getBounds()) {
+    sw_lat = map.getBounds().getSouthWest().lat();
+    sw_lon = map.getBounds().getSouthWest().lng();
+    ne_lat = map.getBounds().getNorthEast().lat();
+    ne_lon = map.getBounds().getNorthEast().lng();
+  } 
+  var radius = getRadius(sw_lat, sw_lon, ne_lat, ne_lon);
+
+  // var http_link = "https://api.foursquare.com/v2/venues/search?client_id="+client_id+
+  //                 "&client_secret="+client_secret+"&v="+today+"&intent=checkin"+
+  //                 "&ll="+center+"&sw="+sw+"&ne="+ne+
+  //                 "&categoryId=4d4b7105d754a06374d81259"+
+  //                 "&limit=10";
+  var http_link = "https://api.foursquare.com/v2/venues/explore?client_id="+client_id+"&client_secret="+client_secret+
+                  "&ll="+center+
+                  "&v="+today+
+                  "&radius="+radius+
+                  "&section=food"+
+                  "&limit=10";
+  xhttp.open("GET", http_link, true);
+  xhttp.send();
+
+}
+
+function getRadius(lat1, lon1, lat2, lon2) {
+    var R = 6378.137; // Radius of earth in KM
+    var dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
+    var dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c;
+    return Math.round(d * 1000); // meters
+}
 // (function(){   
 
 //   if(btnLogout){
