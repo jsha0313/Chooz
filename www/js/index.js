@@ -208,8 +208,8 @@ var getZipcode = function(callback) {
 // locate you.
 
 var map;
-var markers = [];
-var infoWindows = [];
+var venues = [];
+
 var initMap = function (bool = false) {
   if (!bool) return;
   map = new google.maps.Map(document.getElementById('map'), {
@@ -251,7 +251,10 @@ var initMap = function (bool = false) {
   }
 
   // Update Foursquare locations every time where is a change in the map bounds
-  map.addListener('bounds_changed', function(e) {
+  map.addListener('zoom_changed', function(e) {
+    updateFQ();
+  });
+  map.addListener('drag_end', function(e) {
     updateFQ();
   });
 };
@@ -307,31 +310,7 @@ ons.ready(function () {
   });
 });
 
-var updateFQ = function() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-         // Action to be performed when the document is read;
-          var response = JSON.parse(xhttp.responseText).response;
-          var objects = response.groups[0].items;
-          console.log(objects);
-          for (var i=0; i<markers.length; i++) {
-            markers[i].setMap(null);
-          }
-          markers = [];
-          for (var i=0; i<objects.length; i++) {
-
-            var marker = new google.maps.Marker({
-              position: {lat: objects[i].venue.location.lat, lng: objects[i].venue.location.lng},
-              map: map,
-              title: objects[i].venue.name,
-            });
-
-            markers.push(marker);
-          }
-
-      }
-  };
+function getQueryXhttp(type, venue_id) {
   var date = new Date();
   var dd = date.getDate();
   var mm = date.getMonth()+1; //January is 0
@@ -355,20 +334,76 @@ var updateFQ = function() {
   } 
   var radius = getRadius(sw_lat, sw_lon, ne_lat, ne_lon);
 
-  // var http_link = "https://api.foursquare.com/v2/venues/search?client_id="+client_id+
-  //                 "&client_secret="+client_secret+"&v="+today+"&intent=checkin"+
-  //                 "&ll="+center+"&sw="+sw+"&ne="+ne+
-  //                 "&categoryId=4d4b7105d754a06374d81259"+
-  //                 "&limit=10";
-  var http_link = "https://api.foursquare.com/v2/venues/explore?client_id="+client_id+"&client_secret="+client_secret+
-                  "&ll="+center+
-                  "&v="+today+
-                  "&radius="+radius+
-                  "&section=food"+
-                  "&limit=10";
-  xhttp.open("GET", http_link, true);
+  xhttp = new XMLHttpRequest();
+
+  var query_link;
+  if (type == 0) {
+    query_link = "https://api.foursquare.com/v2/venues/explore"+
+                    "?client_id="+client_id+"&client_secret="+client_secret+
+                    "&ll="+center+
+                    "&v="+today+
+                    "&radius="+radius+
+                    "&section=food"+
+                    "&limit=10";
+  } else if (type == 1) {
+    query_link = "https://api.foursquare.com/v2/venues/"+venue_id+"/menu"+
+                  "?client_id="+client_id+"&client_secret="+client_secret+
+                  "&v="+today;
+  }
+  xhttp.open("GET", query_link, true);
   xhttp.send();
 
+  return xhttp;
+}
+
+var updateFQ = function() {
+  var explore_xhttp = getQueryXhttp(0);
+  explore_xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+          var explore_response = JSON.parse(explore_xhttp.responseText).response;
+
+          var venues = explore_response.groups[0].items;
+
+          for (var i=0; i<venues.length; i++) {
+            venues[i].setMap(null);
+          }
+          venues = [];
+          for (var i=0; i<venues.length; i++) {
+            var venue = 
+            {
+              marker: new google.maps.Marker({
+                        position: {lat: venues[i].venue.location.lat, lng: venues[i].venue.location.lng},
+                        map: map,
+                        title: venues[i].venue.name,
+                      }),
+              id: venues[i].venue.id,
+            }
+
+            // infoWindow = new google.maps.InfoWindow({ map: map });
+
+            venue.marker.addListener('click', function() {
+              var menu_xhttp = getQueryXhttp(1, venue.id);
+              menu_xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                  var menu_response = JSON.parse(menu_xhttp.responseText).response;
+                  var menu_entries_array = menu_response.menu.menus.items[0].entries.items;
+                  console.log(menu_entries_array);
+                  venue[i].menu = menu_entries_array;
+                }
+              }
+              // infoWindow.setPosition(marker.position);
+              // infoWindow.setContent(marker.title);
+              // infoWindow.open(map, marker);
+
+              // TODO:
+              // Add transition to menu detail page
+              // parse menu_entries_array data
+
+            });
+            venues.push(marker);
+          }
+      }
+  }
 }
 
 function getRadius(lat1, lon1, lat2, lon2) {
@@ -403,3 +438,5 @@ function getRadius(lat1, lon1, lat2, lon2) {
 //     }
 //   });
 // });
+
+
