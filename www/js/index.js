@@ -209,6 +209,8 @@ var getZipcode = function(callback) {
 
 var map;
 var venues = [];
+var venue_dict = {};
+var menu_dict = {};
 
 var initMap = function (bool = false) {
   if (!bool) return;
@@ -362,33 +364,44 @@ var updateFQ = function() {
       if (this.readyState == 4 && this.status == 200) {
           var explore_response = JSON.parse(explore_xhttp.responseText).response;
 
-          var venues = explore_response.groups[0].items;
+          var items = explore_response.groups[0].items;
 
           for (var i=0; i<venues.length; i++) {
-            venues[i].setMap(null);
+            venues[i].marker.setMap(null);
           }
           venues = [];
-          for (var i=0; i<venues.length; i++) {
+          for (var i=0; i<items.length; i++) {
             var venue = 
             {
               marker: new google.maps.Marker({
-                        position: {lat: venues[i].venue.location.lat, lng: venues[i].venue.location.lng},
+                        position: {lat: items[i].venue.location.lat, lng: items[i].venue.location.lng},
                         map: map,
-                        title: venues[i].venue.name,
+                        title: items[i].venue.name,
                       }),
-              id: venues[i].venue.id,
+              id: items[i].venue.id,
             }
 
             // infoWindow = new google.maps.InfoWindow({ map: map });
 
             venue.marker.addListener('click', function() {
-              var menu_xhttp = getQueryXhttp(1, venue.id);
-              menu_xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                  var menu_response = JSON.parse(menu_xhttp.responseText).response;
-                  var menu_entries_array = menu_response.menu.menus.items[0].entries.items;
-                  console.log(menu_entries_array);
-                  venue[i].menu = menu_entries_array;
+              if (venue_dict[venue.id] === undefined) {
+                var menu_xhttp = getQueryXhttp(1, venue.id);
+                menu_xhttp.onreadystatechange = function() {
+                  if (this.readyState == 4 && this.status == 200) {
+                    var menu_response = JSON.parse(menu_xhttp.responseText).response;
+                    console.log(menu_response);
+                    if (menu_response.menu.menus.count != 0) {
+                      var menu_entries_array = menu_response.menu.menus.items[0].entries.items;
+
+                      var menu_entries_dict = {};
+                      for (var i=0; i<menu_entries_array.length; i++) {
+                        var menu_entries = menu_entries_array[i];
+                        menu_entries_dict[menu_entries.name] = menu_entries.entries.items;
+                      }
+                      venue_dict[venue.id] = menu_entries_dict;
+                      console.log(venue_dict);
+                    }
+                  }
                 }
               }
               // infoWindow.setPosition(marker.position);
@@ -400,7 +413,8 @@ var updateFQ = function() {
               // parse menu_entries_array data
 
             });
-            venues.push(marker);
+
+            venues.push(venue);
           }
       }
   }
