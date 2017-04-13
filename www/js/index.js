@@ -4,14 +4,14 @@
 
   @params object error
 */
-var displayError = function(error) {
+var displayError = function (error) {
   var message = "An error has occurred. Please try again.";
 
-    if ( error.hasOwnProperty('message') ) { 
-      message = error.message;
-    }
+  if (error.hasOwnProperty('message')) {
+    message = error.message;
+  }
 
-    return message;
+  return message;
 }
 
 var login = function () {
@@ -116,14 +116,14 @@ var tipNbudget = function () {
   console.log('tip n budget function');
   // Location();
 
-  var zipcode = document.getElementById('zipcode'); 
+  var zipcode = document.getElementById('zipcode');
   var locationOff = document.body.contains(zipcode);
   var salesTax = 0;
 
   if (!locationOff) {
     console.log('user enabled location services');
 
-    getZipcode( function (res) {
+    getZipcode(function (res) {
       /* 
         use a callback function so that
         this function does not go on until
@@ -151,7 +151,7 @@ var tipNbudget = function () {
 
   @params - String zipcode
 */
-var getSalesTax = function(zipcode) {
+var getSalesTax = function (zipcode) {
   console.log('get sales tax function');
   var xhr = new XMLHttpRequest();
   xhr.withCredentials = true;
@@ -166,7 +166,7 @@ var getSalesTax = function(zipcode) {
   var url = "/tax?zipcode=" + zipcode;
 
   xhr.open("GET", url);
-  xhr.setRequestHeader("cache-control", "no-cache");  
+  xhr.setRequestHeader("cache-control", "no-cache");
   xhr.send();
 }
 
@@ -177,22 +177,22 @@ var getSalesTax = function(zipcode) {
 
   @params - function callback
 */
-var getZipcode = function(callback) {
+var getZipcode = function (callback) {
   var geocoder = new google.maps.Geocoder;
 
-  if ( navigator.geolocation ) {
+  if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
       // console.log(position.address.postalCode);
       console.log(position);
       var pos = {
         lat: position.coords.latitude,
         lng: position.coords.longitude
-      };      
-      geocoder.geocode({'location': pos}, function(result, status) {
-        if ( status === 'OK') {
-          if ( result[0] ) {
+      };
+      geocoder.geocode({ 'location': pos }, function (result, status) {
+        if (status === 'OK') {
+          if (result[0]) {
             let postalCode = result[0].address_components.find(function (component) {
-                return component.types[0] == "postal_code";
+              return component.types[0] == "postal_code";
             });
             callback(postalCode);
           }
@@ -216,19 +216,21 @@ var initMap = function (bool = false) {
   if (!bool) return;
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: -34.397, lng: 150.644 },
-    zoom: 12
+    zoom: 15
   });
-  map.setOptions({styles: [
+  map.setOptions({
+    styles: [
       {
         featureType: 'poi.business',
-        stylers: [{visibility: 'off'}]
+        stylers: [{ visibility: 'off' }]
       },
       {
         featureType: 'transit',
         elementType: 'labels.icon',
-        stylers: [{visibility: 'off'}]
+        stylers: [{ visibility: 'off' }]
       }
-    ]});
+    ]
+  });
 
   var infoWindow = new google.maps.InfoWindow({ map: map });
 
@@ -253,10 +255,10 @@ var initMap = function (bool = false) {
   }
 
   // Update Foursquare locations every time where is a change in the map bounds
-  map.addListener('zoom_changed', function(e) {
+  map.addListener('zoom_changed', function (e) {
     updateFQ();
   });
-  map.addListener('drag_end', function(e) {
+  map.addListener('drag_end', function (e) {
     updateFQ();
   });
 };
@@ -300,7 +302,7 @@ ons.ready(function () {
     }
     if (page.id === 'tipNbudgetW/location' || page.id === 'tipNbudgetW/Olocation') {
       console.log('tip n budget');
-      page.querySelector('#confirm').onclick = function() {
+      page.querySelector('#confirm').onclick = function () {
         document.querySelector('#myNav')
           .pushPage('search.html', { data: { title: 'search' } })
           .then(function () {
@@ -315,15 +317,15 @@ ons.ready(function () {
 function getQueryXhttp(type, venue_id) {
   var date = new Date();
   var dd = date.getDate();
-  var mm = date.getMonth()+1; //January is 0
+  var mm = date.getMonth() + 1; //January is 0
   var yyyy = date.getFullYear();
-  if(dd<10){
-      dd='0'+dd;
-  } 
-  if(mm<10){
-      mm='0'+mm;
-  } 
-  var today = yyyy+mm+dd;
+  if (dd < 10) {
+    dd = '0' + dd;
+  }
+  if (mm < 10) {
+    mm = '0' + mm;
+  }
+  var today = yyyy + mm + dd;
   var client_id = "VZP5RZFVTJRAPIASNSAEHBOBU12DK3WC4SQQNHZCAG3FAXT2";
   var client_secret = "XDVSW4E3LHM3NM31BYPOGNSW21MFDXF3BDPJ0YBSPGCGCVQX";
   var center = map.getCenter().toUrlValue(14);
@@ -333,24 +335,24 @@ function getQueryXhttp(type, venue_id) {
     sw_lon = map.getBounds().getSouthWest().lng();
     ne_lat = map.getBounds().getNorthEast().lat();
     ne_lon = map.getBounds().getNorthEast().lng();
-  } 
+  }
   var radius = getRadius(sw_lat, sw_lon, ne_lat, ne_lon);
 
   xhttp = new XMLHttpRequest();
 
   var query_link;
   if (type == 0) {
-    query_link = "https://api.foursquare.com/v2/venues/explore"+
-                    "?client_id="+client_id+"&client_secret="+client_secret+
-                    "&ll="+center+
-                    "&v="+today+
-                    "&radius="+radius+
-                    "&section=food"+
-                    "&limit=10";
+    query_link = "https://api.foursquare.com/v2/venues/explore" +
+      "?client_id=" + client_id + "&client_secret=" + client_secret +
+      "&ll=" + center +
+      "&v=" + today +
+      "&radius=" + radius +
+      "&section=food" +
+      "&limit=10";
   } else if (type == 1) {
-    query_link = "https://api.foursquare.com/v2/venues/"+venue_id+"/menu"+
-                  "?client_id="+client_id+"&client_secret="+client_secret+
-                  "&v="+today;
+    query_link = "https://api.foursquare.com/v2/venues/" + venue_id + "/menu" +
+      "?client_id=" + client_id + "&client_secret=" + client_secret +
+      "&v=" + today;
   }
   xhttp.open("GET", query_link, true);
   xhttp.send();
@@ -358,78 +360,89 @@ function getQueryXhttp(type, venue_id) {
   return xhttp;
 }
 
-var updateFQ = function() {
+var updateFQ = function () {
   var explore_xhttp = getQueryXhttp(0);
-  explore_xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-          var explore_response = JSON.parse(explore_xhttp.responseText).response;
+  explore_xhttp.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      var explore_response = JSON.parse(explore_xhttp.responseText).response;
 
-          var items = explore_response.groups[0].items;
+      var items = explore_response.groups[0].items;
 
-          for (var i=0; i<venues.length; i++) {
-            venues[i].marker.setMap(null);
+      for (var i = 0; i < venues.length; i++) {
+        venues[i].marker.setMap(null);
+      }
+      
+      venues = [];
+      for (var i = 0; i < items.length; i++) {
+        var venue =
+          {
+            marker: new google.maps.Marker({
+              position: { lat: items[i].venue.location.lat, lng: items[i].venue.location.lng },
+              // position: items[i].geometry.location,
+              map: map,
+              title: items[i].venue.name,
+              icon: {
+                url: 'https://developers.google.com/maps/documentation/javascript/images/circle.png',
+                anchor: new google.maps.Point(10, 10),
+                scaledSize: new google.maps.Size(10, 17)
+              },
+              store_id: items[i].venue.id
+            }),
+            id: items[i].venue.id,
+            
           }
-          venues = [];
-          for (var i=0; i<items.length; i++) {
-            var venue = 
-            {
-              marker: new google.maps.Marker({
-                        position: {lat: items[i].venue.location.lat, lng: items[i].venue.location.lng},
-                        map: map,
-                        title: items[i].venue.name,
-                      }),
-              id: items[i].venue.id,
-            }
 
-            // infoWindow = new google.maps.InfoWindow({ map: map });
+        infoWindow = new google.maps.InfoWindow({ map: map });
+        venue.marker.addListener('click', function () {
+          if (venue_dict[venue.id] === undefined) {
+            var menu_xhttp = getQueryXhttp(1, venue.id);
+            console.log(menu_xhttp);
+            menu_xhttp.onreadystatechange = function () {
+              if (this.readyState == 4 && this.status == 200) {
+                var menu_response = JSON.parse(menu_xhttp.responseText).response;
+                if (menu_response.menu.menus.count != 0) {
+                  var menu_entries_array = menu_response.menu.menus.items[0].entries.items;
 
-            venue.marker.addListener('click', function() {
-              if (venue_dict[venue.id] === undefined) {
-                var menu_xhttp = getQueryXhttp(1, venue.id);
-                menu_xhttp.onreadystatechange = function() {
-                  if (this.readyState == 4 && this.status == 200) {
-                    var menu_response = JSON.parse(menu_xhttp.responseText).response;
-                    console.log(menu_response);
-                    if (menu_response.menu.menus.count != 0) {
-                      var menu_entries_array = menu_response.menu.menus.items[0].entries.items;
-
-                      var menu_entries_dict = {};
-                      for (var i=0; i<menu_entries_array.length; i++) {
-                        var menu_entries = menu_entries_array[i];
-                        menu_entries_dict[menu_entries.name] = menu_entries.entries.items;
-                      }
-                      venue_dict[venue.id] = menu_entries_dict;
-                      console.log(venue_dict);
-                    }
+                  var menu_entries_dict = {};
+                  for (var i = 0; i < menu_entries_array.length; i++) {
+                    var menu_entries = menu_entries_array[i];
+                    menu_entries_dict[menu_entries.name] = menu_entries.entries.items;
                   }
+                  venue_dict[venue.id] = menu_entries_dict;
                 }
               }
-              // infoWindow.setPosition(marker.position);
-              // infoWindow.setContent(marker.title);
-              // infoWindow.open(map, marker);
-
-              // TODO:
-              // Add transition to menu detail page
-              // parse menu_entries_array data
-
-            });
-
-            venues.push(venue);
+            }
           }
+          // console.log("venue_dict[venue.id]: "+ venue_dict[venue.id]);
+          infoWindow.setContent('<div><strong>' + this.title+ '</strong><br>' +
+            'Place ID: ' + this.store_id + '<br>' + '<a href=' + +'></a>'+'</div>');
+          // infoWindow.setContent('name');
+          // infoWindow.setPosition(this.position);
+          // infoWindow.setContent(marker.title);
+           infoWindow.open(map, this);
+
+          // TODO:
+          // Add transition to menu detail page
+          // parse menu_entries_array data
+
+        });
+
+        venues.push(venue);
       }
+    }
   }
-}
+};
 
 function getRadius(lat1, lon1, lat2, lon2) {
-    var R = 6378.137; // Radius of earth in KM
-    var dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
-    var dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
-    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+  var R = 6378.137; // Radius of earth in KM
+  var dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
+  var dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
+  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var d = R * c;
-    return Math.round(d * 1000); // meters
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c;
+  return Math.round(d * 1000); // meters
 }
 // (function(){   
 
