@@ -402,18 +402,18 @@ var updateFQ = function () {
                 var menu_response = JSON.parse(menu_xhttp.responseText).response;
                 if (menu_response.menu.menus.count != 0) {
                   var menu_entries_array = menu_response.menu.menus.items[0].entries.items;
-
                   var menu_entries_dict = {};
                   for (var i = 0; i < menu_entries_array.length; i++) {
                     var menu_entries = menu_entries_array[i];
                     menu_entries_dict[menu_entries.name] = menu_entries.entries.items;
                   }
                   venue_dict[venue.id] = menu_entries_dict;
+                  console.log(venue_dict);
                 }
               }
             }
           }
-          // console.log("venue_dict[venue.id]: "+ venue_dict[venue.id]);
+          console.log("venue_dict[venue.id]: "+ venue_dict[venue.id]);
           infoWindow.setContent('<div><strong>' + this.title+ '</strong><br>' +
             'Place ID: ' + this.store_id + '<br>' + '<a href=' + +'></a>'+'</div>');
           // infoWindow.setContent('name');
