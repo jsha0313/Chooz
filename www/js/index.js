@@ -270,6 +270,21 @@ var handleLocationError = function (browserHasGeolocation, infoWindow, pos) {
     'Error: Your browser doesn\'t support geolocation.');
 };
 
+var menulist = function () {
+    var infiniteList = document.getElementById('infinite-list');
+    infiniteList.delegate = {
+        createItemContent: function (i) {
+            return ons._util.createElement(
+                '<ons-list-item>Item ' + i + '</ons-list-item>' //FIX ME: change to actual name of menu
+            );
+        },
+        countItems: function () {
+            return 20; //FIX ME: can set the number of menus
+        }
+    };
+    infiniteList.refresh();
+};
+
 ons.ready(function () {
   console.log('ons.ready firing');
   // Onsen UI is now initialized
@@ -311,6 +326,14 @@ ons.ready(function () {
           });
       }
     };
+    if (page.id === 'search') {
+            page.querySelector('#settingButton').onclick = function () { //FIX ME: temporary trigger button as Setting. modify this to trigger when marker is clicked
+                document.querySelector('#myNav').pushPage('menulist.html', { data: { title: 'Menulist' } })
+                    .then(function () {
+                        menulist();
+                    });
+            };
+        }
   });
 });
 
@@ -371,7 +394,7 @@ var updateFQ = function () {
       for (var i = 0; i < venues.length; i++) {
         venues[i].marker.setMap(null);
       }
-      
+
       venues = [];
       for (var i = 0; i < items.length; i++) {
         var venue =
@@ -389,7 +412,7 @@ var updateFQ = function () {
               store_id: items[i].venue.id
             }),
             id: items[i].venue.id,
-            
+
           }
 
         infoWindow = new google.maps.InfoWindow({ map: map });
@@ -413,13 +436,13 @@ var updateFQ = function () {
               }
             }
           }
-          console.log("venue_dict[venue.id]: "+ venue_dict[venue.id]);
-          infoWindow.setContent('<div><strong>' + this.title+ '</strong><br>' +
-            'Place ID: ' + this.store_id + '<br>' + '<a href=' + +'></a>'+'</div>');
+          console.log("venue_dict[venue.id]: " + venue_dict[venue.id]);
+          infoWindow.setContent('<div><strong>' + this.title + '</strong><br>' +
+            'Place ID: ' + this.store_id + '<br>' + '<a href=' + +'></a>' + '</div>');
           // infoWindow.setContent('name');
           // infoWindow.setPosition(this.position);
           // infoWindow.setContent(marker.title);
-           infoWindow.open(map, this);
+          infoWindow.open(map, this);
 
           // TODO:
           // Add transition to menu detail page
@@ -465,5 +488,4 @@ function getRadius(lat1, lon1, lat2, lon2) {
 //     }
 //   });
 // });
-
 
