@@ -330,9 +330,81 @@ function menulist(venue) {
         }
       }
     }
-
 };
 
+// var menuNum=10;
+// var menulist = function () {
+//     var infiniteList = document.getElementById('infinite-list');
+//     infiniteList.delegate = {
+//         createItemContent: function (i) {
+//             return ons._util.createElement(
+//                 '<ons-list-item><form id="menulist" class="left"><ons-input type="checkbox" name="menu" id="menu" input-id="check-'+i+'"></ons-input></form>'+
+//                 'Item ' + i + '<div class="right"><ons-button onclick="fromTemplate()">Price</ons-button></div></ons-list-item>'
+//             );
+//         },
+//         countItems: function () {
+//             return menuNum;
+//         }
+//     };
+//     console.log("menuNum: "+menuNum);
+//     infiniteList.refresh();
+// };
+
+function chooz() {    
+    var menu = [];
+    menu = document.getElementById("menulist");
+    console.log(document.getElementById("menulist")[0].checked+" "+document.forms[0]+" "+menu[0].checked+" "+menu.length);
+    var i;
+    for (i = 0; i < menu.length; i++) {
+        console.log("i: "+i);
+        if (menu[i].checked) {
+            console.log("inside checking");
+            console.log(menu[i].value);
+        }
+    }
+    
+}
+var showPopover = function (target) {
+    document
+        .getElementById('popover')
+        .show(target);
+};
+var hidePopover = function () {
+    document
+        .getElementById('popover')
+        .hide();
+};
+var showDialog = function (id) {
+    document
+        .getElementById(id)
+        .show();
+};
+var fromTemplate = function () {
+    var dialog = document.getElementById('dialog-3');
+
+    if (dialog) {
+        dialog.show();
+    }
+    else {
+        ons.createDialog('receipt.html')
+            .then(function (dialog) {
+                dialog.show();
+            });
+    }
+};
+var hideDialog = function (id) {
+    document
+        .getElementById(id)
+        .hide();
+};
+
+function showModal() {
+    var modal = document.querySelector('ons-modal');
+    modal.show();
+    setTimeout(function () {
+        modal.hide();
+    }, 2000);
+}
 ons.ready(function () {
   console.log('ons.ready firing');
   // Onsen UI is now initialized
@@ -375,10 +447,16 @@ ons.ready(function () {
       }
     };
     if (page.id === 'search') {
-            page.querySelector('#settingButton').onclick = function () { //FIX ME: temporary trigger button as Setting. modify this to trigger when marker is clicked
+            page.querySelector('#searchButton').onclick = function () { //FIX ME: temporary trigger button as Setting. modify this to trigger when marker is clicked
                 document.querySelector('#myNav').pushPage('menulist.html', { data: { title: 'Menulist' } })
                     .then(function () {
                         menulist();
+                    });
+            };
+            page.querySelector('#settingButton').onclick = function () { //FIX ME: temporary trigger button as Setting. modify this to trigger when marker is clicked
+                document.querySelector('#myNav').pushPage('setting.html', { data: { title: 'Setting' } })
+                    .then(function () {
+                        setting();
                     });
             };
         }

@@ -183,16 +183,6 @@
     </ons-template>
 
     <ons-template id="search.html">
-        <!--<ons-page id="search" class="blueBackground">
-            <div class="loginOuter">
-                <div class="loginMid">  
-                    <div class="loginInner">-->
-
-
-        <!--<script type="text/ons-template" id="search.html">-->
-        <!--<script>
-            initMap();
-        </script>-->
         <ons-page id="search">
             <ons-toolbar>
                 <div class="left">
@@ -201,6 +191,7 @@
                 <ons-progress-bar value="10"></ons-progress-bar>
                 <div class="center">Budget Bar</div>
                 <div class="right">
+                    <ons-button class="searchBtn" id="searchButton" onclick="search();">Search</ons-button>
                     <ons-button class="settingBtn" id="settingButton" onclick="setting();">Setting</ons-button>
                 </div>
             </ons-toolbar>
@@ -226,11 +217,103 @@
             </ons-toolbar>
 
             <ons-list>
-                <ons-lazy-repeat id="infinite-list"></ons-lazy-repeat>
-            </ons-list> 
-            <ons-button class="center">Chooz</div>
+                <ons-lazy-repeat id="infinite-list">
+                    <ons-list-header>Default</ons-list-header>
+                </ons-lazy-repeat>
+            </ons-list>
+
+            <p style="text-align: center; margin: 50% 0;">
+                <ons-button class="choozBtn" onclick="showModal(); chooz()">CHOOZ</ons-button>
+            </p>
+            <ons-modal direction="up">
+                <div style="text-align: center">
+                    <p>
+                        <ons-icon icon="md-spinner" size="28px" spin></ons-icon> Loading...
+                    </p>
+                </div>
+            </ons-modal>
         </ons-page>
     </ons-template>
+    <ons-template id="setting.html">
+        <ons-toolbar>
+                <div class="left">
+                    <ons-back-button>Back</ons-back-button>
+                </div>
+                <div class="center">Setting</div>
+            </ons-toolbar>
+        <ons-page id="setting">
+            <ons-button class="viewRestaurantBtn">
+                <div>View Restaurants</div>
+            </ons-button>
+            <ons-button class="logoutBtn">
+                <div>Log Out</div>
+            </ons-button>
+            <br>
+            <table>
+                <tr>
+                    <th>Zip Code</th>
+                    <th>Tip(%)</th>
+                    <th>Budget</th>
+                </tr>
+                <tr>
+                    <td>63130</td>
+                    <td>12</td>
+                    <td>$12</td>
+                </tr>
+            </table>
+
+            <ul>
+                <li>King Doh
+                    <ons-button class="detailBtn">Detail</ons-button>
+                </li>
+                <li>Ibbys
+                    <ons-button class="detailBtn">Detail</ons-button>
+                </li>
+            </ul>
+
+            <table>
+                <tr>
+                    <th>Email Address</th>
+                    <th>---</th>
+                </tr>
+                <tr>
+                    <td>Full Name</td>
+                    <td>---</td>
+                </tr>
+                <tr style="text-align: center; margin: 30% 0;">
+                    <td><ons-button class="resetPasswordBtn" onclick="showModal(); resetPassword()">Reset Password</ons-button></td>
+                </tr>
+            </table>
+            <ons-modal direction="up">
+                <div style="text-align: center">
+                    <p>
+                        <ons-icon icon="md-spinner" size="28px" spin></ons-icon> Loading...
+                    </p>
+                </div>
+            </ons-modal>
+        </ons-page>
+    </ons-template>
+    <ons-template id="receipt.html">
+        <ons-dialog id="dialog-3">
+            <div style="text-align: center; padding: 10px;">
+                <p>
+                    <ons-list-item>
+                        <div class="center">
+                            Menu Name
+                        </div>
+                        <div class="center">
+                            Price
+                        </div>
+                    </ons-list-item>
+                    <p>
+
+                        <p>
+                            <ons-button onclick="hideDialog('dialog-3')">Close</ons-button>
+                        </p>
+            </div>
+        </ons-dialog>
+    </ons-template>
+
 
 </body>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD7m5lD3fCCz61cJY6McEyp3tv8WdL3Gg&callback=initMap"
