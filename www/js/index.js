@@ -270,19 +270,67 @@ var handleLocationError = function (browserHasGeolocation, infoWindow, pos) {
     'Error: Your browser doesn\'t support geolocation.');
 };
 
-var menulist = function () {
-    var infiniteList = document.getElementById('infinite-list');
-    infiniteList.delegate = {
-        createItemContent: function (i) {
-            return ons._util.createElement(
-                '<ons-list-item>Item ' + i + '</ons-list-item>' //FIX ME: change to actual name of menu
-            );
-        },
-        countItems: function () {
-            return 20; //FIX ME: can set the number of menus
+function menulist(venue) {
+  console.log(venue.id);
+    if (venue_dict[venue.id] === undefined) {
+      var menu_xhttp = getQueryXhttp(1, venue.id);
+      console.log(venue.id);
+      menu_xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          var menu_response = JSON.parse(menu_xhttp.responseText).response;
+          console.log(menu_response);
+          if (menu_response.menu.menus.count != 0) {
+            var menu_entries_array = menu_response.menu.menus.items[0].entries.items;
+            console.log(menu_entries_array);
+            var menu_entries_dict = {};
+            for (var i = 0; i < menu_entries_array.length; i++) {
+              var menu_entries = menu_entries_array[i];
+              menu_entries_dict[menu_entries.name] = menu_entries.entries.items;
+            }
+            venue_dict[venue.id] = menu_entries_dict;
+
+            var menu_values = Object.values(venue_dict[venue_id]);
+            console.log(menu_values);
+            var menu_array = [];
+            for (var i=0; i<menu_values.length; i++) {
+              console.log(menu_values[i]);
+              var menu_temp_array = menu_values[i];
+              for (var j=0; j<menu_temp_array.length; j++) {
+                console.log(menu_temp_array[j]);
+                menu_array.push(menu_temp_array[j]);
+              }
+            }
+            // for(key in menu) {
+            //     if(menu.hasOwnProperty(key)) {
+            //         var value = menu[key];
+            //         menu_array.push(value);
+            //         //do something with value;
+            //     }
+            // }
+            console.log(menu_array);
+            document.getElementById('list-title').innerHTML = venue_title;
+
+            if (menu_array.length > 0) {
+              var infiniteList = document.getElementById('infinite-list');
+              infiniteList.delegate = {
+                  createItemContent: function (i) {
+                      return ons._util.createElement(
+                          // '<ons-list-item>Item ' + i + '</ons-list-item>' //FIX ME: change to actual name of menu
+                          '<ons-list-item>' + menu_array[i].name + '</ons-list-item>'
+                      );
+                  },
+                  countItems: function () {
+                      return menu_array.length; //FIX ME: can set the number of menus
+                  }
+              };
+              infiniteList.refresh();
+            }
+
+          }
         }
-    };
-    infiniteList.refresh();
+      }
+    }
+
 };
 
 ons.ready(function () {
@@ -412,41 +460,17 @@ var updateFQ = function () {
               store_id: items[i].venue.id
             }),
             id: items[i].venue.id,
-
           }
+        console.log(venue.marker.title+": "+venue.id);
 
         infoWindow = new google.maps.InfoWindow({ map: map });
         venue.marker.addListener('click', function () {
-          if (venue_dict[venue.id] === undefined) {
-            var menu_xhttp = getQueryXhttp(1, venue.id);
-            console.log(menu_xhttp);
-            menu_xhttp.onreadystatechange = function () {
-              if (this.readyState == 4 && this.status == 200) {
-                var menu_response = JSON.parse(menu_xhttp.responseText).response;
-                if (menu_response.menu.menus.count != 0) {
-                  var menu_entries_array = menu_response.menu.menus.items[0].entries.items;
-                  var menu_entries_dict = {};
-                  for (var i = 0; i < menu_entries_array.length; i++) {
-                    var menu_entries = menu_entries_array[i];
-                    menu_entries_dict[menu_entries.name] = menu_entries.entries.items;
-                  }
-                  venue_dict[venue.id] = menu_entries_dict;
-                  console.log(venue_dict);
-                }
-              }
-            }
-          }
-          console.log("venue_dict[venue.id]: " + venue_dict[venue.id]);
           infoWindow.setContent('<div><strong>' + this.title + '</strong><br>' +
-            'Place ID: ' + this.store_id + '<br>' + '<a href=' + +'></a>' + '</div>');
+            'Place ID: ' + this.store_id + '<br>' + '<button type="button" onclick="openMenuList(\''+venue+'\')">Click me</button>' + '</div>');
           // infoWindow.setContent('name');
           // infoWindow.setPosition(this.position);
           // infoWindow.setContent(marker.title);
           infoWindow.open(map, this);
-
-          // TODO:
-          // Add transition to menu detail page
-          // parse menu_entries_array data
 
         });
 
@@ -455,6 +479,14 @@ var updateFQ = function () {
     }
   }
 };
+
+function openMenuList(venue) {
+  console.log("in here");
+  document.querySelector('#myNav').pushPage('menulist.html', { data: { title: 'Menulist' } })
+      .then(function () {
+          menulist(venue);
+      });
+}
 
 function getRadius(lat1, lon1, lat2, lon2) {
   var R = 6378.137; // Radius of earth in KM
