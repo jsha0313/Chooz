@@ -270,85 +270,55 @@ var handleLocationError = function (browserHasGeolocation, infoWindow, pos) {
     'Error: Your browser doesn\'t support geolocation.');
 };
 
-function menulist(venue) {
-  console.log(venue.id);
-    if (venue_dict[venue.id] === undefined) {
-      var menu_xhttp = getQueryXhttp(1, venue.id);
-      console.log(venue.id);
-      menu_xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-          var menu_response = JSON.parse(menu_xhttp.responseText).response;
-          console.log(menu_response);
-          if (menu_response.menu.menus.count != 0) {
-            var menu_entries_array = menu_response.menu.menus.items[0].entries.items;
-            console.log(menu_entries_array);
-            var menu_entries_dict = {};
-            for (var i = 0; i < menu_entries_array.length; i++) {
-              var menu_entries = menu_entries_array[i];
-              menu_entries_dict[menu_entries.name] = menu_entries.entries.items;
-            }
-            venue_dict[venue.id] = menu_entries_dict;
-
-            var menu_values = Object.values(venue_dict[venue_id]);
-            console.log(menu_values);
-            var menu_array = [];
-            for (var i=0; i<menu_values.length; i++) {
-              console.log(menu_values[i]);
-              var menu_temp_array = menu_values[i];
-              for (var j=0; j<menu_temp_array.length; j++) {
-                console.log(menu_temp_array[j]);
-                menu_array.push(menu_temp_array[j]);
-              }
-            }
-            // for(key in menu) {
-            //     if(menu.hasOwnProperty(key)) {
-            //         var value = menu[key];
-            //         menu_array.push(value);
-            //         //do something with value;
-            //     }
-            // }
-            console.log(menu_array);
-            document.getElementById('list-title').innerHTML = venue_title;
-
-            if (menu_array.length > 0) {
-              var infiniteList = document.getElementById('infinite-list');
-              infiniteList.delegate = {
-                  createItemContent: function (i) {
-                      return ons._util.createElement(
-                          // '<ons-list-item>Item ' + i + '</ons-list-item>' //FIX ME: change to actual name of menu
-                          '<ons-list-item>' + menu_array[i].name + '</ons-list-item>'
-                      );
-                  },
-                  countItems: function () {
-                      return menu_array.length; //FIX ME: can set the number of menus
-                  }
-              };
-              infiniteList.refresh();
-            }
-
+function menulist(title, id) {
+  if (venue_dict[id] === undefined) {
+    var menu_xhttp = getQueryXhttp(1, id);
+    menu_xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        var menu_response = JSON.parse(menu_xhttp.responseText).response;
+        // console.log(menu_response);
+        if (menu_response.menu.menus.count != 0) {
+          var menu_entries_array = menu_response.menu.menus.items[0].entries.items;
+          var menu_entries_dict = {};
+          for (var i = 0; i < menu_entries_array.length; i++) {
+            var menu_entries = menu_entries_array[i];
+            menu_entries_dict[menu_entries.name] = menu_entries.entries.items;
           }
+          venue_dict[id] = menu_entries_dict;
+
+          populateList(title, id);
         }
       }
     }
+  } else {
+    populateList(title, id);
+  }
 };
 
-// var menuNum=10;
-// var menulist = function () {
-//     var infiniteList = document.getElementById('infinite-list');
-//     infiniteList.delegate = {
-//         createItemContent: function (i) {
-//             return ons._util.createElement(
-//                 '<ons-list-item><form id="menulist" class="left"><ons-input type="checkbox" name="menu" id="menu" input-id="check-'+i+'"></ons-input></form>'+
-//                 'Item ' + i + '<div class="right"><ons-button onclick="fromTemplate()">Price</ons-button></div></ons-list-item>'
-//             );
-//         },
-//         countItems: function () {
-//             return menuNum;
-//         }
-//     };
-//     console.log("menuNum: "+menuNum);
-//     infiniteList.refresh();
-// };
+function populateList(title, id) {
+  // Populate the list with menu items
+  document.getElementById('list-title').innerHTML = title;
+  var menuList = document.getElementById('menu-list');
+
+  for (var menu_type in venue_dict[id]) {
+    var menu_header = document.createElement('ons-list-header');
+    menu_header.innerText = menu_type;
+
+    menuList.appendChild(menu_header);
+
+    // console.log(venue_dict[id][menu_type]);
+
+    for (var i=0; i< venue_dict[id][menu_type].length; i++) {
+      var menu = venue_dict[id][menu_type][i];
+      var menu_item = document.createElement('ons-list-item');
+      menu_item.innerText = menu.name;
+      // FIXME:
+      // menu price can be called with "menu.price"
+      // menu description can be called with "menu.description"
+      menuList.appendChild(menu_item);
+    }
+  }
+}
 
 function chooz() {    
     var menu = [];
@@ -540,16 +510,38 @@ var updateFQ = function () {
             id: items[i].venue.id,
           }
         console.log(venue.marker.title+": "+venue.id);
+        venues.push(venue);
 
         infoWindow = new google.maps.InfoWindow({ map: map });
         venue.marker.addListener('click', function () {
-          infoWindow.setContent('<div><strong>' + this.title + '</strong><br>' +
-            'Place ID: ' + this.store_id + '<br>' + '<button type="button" onclick="openMenuList(\''+venue+'\')">Click me</button>' + '</div>');
-          // infoWindow.setContent('name');
-          // infoWindow.setPosition(this.position);
-          // infoWindow.setContent(marker.title);
-          infoWindow.open(map, this);
 
+          var div = document.createElement("DIV");
+          var s = document.createElement("STRONG");
+          s.innerHTML = this.title;
+          var br = document.createElement("BR");
+          var id = document.createElement("P");
+          id.id = "venueId";
+          id.innerHTML = this.store_id;
+          var button = document.createElement("BUTTON");
+          button.type = "button";
+          var button_text = document.createTextNode("Click me");
+
+          div.appendChild(s);
+          div.appendChild(br);
+          button.appendChild(button_text);
+          div.appendChild(button);
+          div.appendChild(id);
+
+          div.addEventListener('click', function(div) {
+            return function() {
+              console.log(this);
+              openMenuList(div.childNodes[0].innerHTML, div.childNodes[div.childNodes.length - 1].innerHTML);
+
+            }
+            }(div));
+
+          infoWindow.setContent(div);
+          infoWindow.open(map, this);
         });
 
         venues.push(venue);
@@ -558,11 +550,10 @@ var updateFQ = function () {
   }
 };
 
-function openMenuList(venue) {
-  console.log("in here");
+function openMenuList(title, id) {
   document.querySelector('#myNav').pushPage('menulist.html', { data: { title: 'Menulist' } })
       .then(function () {
-          menulist(venue);
+          menulist(title, id);
       });
 }
 

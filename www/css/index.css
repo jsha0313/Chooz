@@ -316,3 +316,11 @@ h2{
     color: white;
     
 }
+
+#venueId {
+  display: none;
+}
+#venueTitle {
+  position: relative;
+  visibility: hidden;
+}
