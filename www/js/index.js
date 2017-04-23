@@ -232,15 +232,21 @@ var initMap = function (bool = false) {
     ]
   });
 
+  var geocoder = new google.maps.Geocoder();
+
   var infoWindow = new google.maps.InfoWindow({ map: map });
 
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
+   
+   
     navigator.geolocation.getCurrentPosition(function (position) {
       var pos = {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
+
+      console.log("latlonggoit");
 
       // infoWindow.setPosition(pos);
       // infoWindow.setContent('Location found.');
@@ -249,8 +255,10 @@ var initMap = function (bool = false) {
     }, function () {
       handleLocationError(true, infoWindow, map.getCenter());
     });
-  } else {
+  }
+    else {
     // Browser doesn't support Geolocation
+    console.log("shibal")
     handleLocationError(false, infoWindow, map.getCenter());
   }
 
