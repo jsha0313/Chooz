@@ -232,13 +232,10 @@ var initMap = function (enabled) {
     ]
   });
 
-  var geocoder = new google.maps.Geocoder();
-
   var infoWindow = new google.maps.InfoWindow({ map: map });
 
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
-   
     if (enabled) {
       navigator.geolocation.getCurrentPosition(function (position) {
         var pos = {
@@ -274,7 +271,6 @@ var initMap = function (enabled) {
   }
     else {
     // Browser doesn't support Geolocation
-    console.log("shibal")
     handleLocationError(false, infoWindow, map.getCenter());
   }
 

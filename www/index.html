@@ -111,7 +111,7 @@
                 <div class="locService">
                     <div class="locInner">
                         <i class="fa fa-map-marker" style="top:10px;font-size:30px; color: white;"></i>
-                        <h2>Allow Location Services?</h2>
+                        <h2>Allow Location Service?</h2>
                         <button class="location" id="allowLocationButton" onclick="myNav.pushPage('tipNbudgetW/location.html');">Yes</button>
                         <button class="location" id="notAllowLocationButton" onclick="myNav.pushPage('tipNbudgetW/Olocation.html');">No</button>
                     </div>
@@ -134,13 +134,16 @@
                         <h2> Put those numbers in! </h2>
                         <form action="search.html">
                             <div class="question">
+                                <input type="text" class="zipcode" id="zipcode"><label>Zip Code</label>
+                            </div>
+                            <div class="question">
                                 <input type="text" class="tipNbudget" id="tip"><label>Tip %</label>
                             </div>
                             <div class="question">
                                 <input type="text" class="tipNbudget" id="budget"><label>Budget</label>
                             </div>
                             <br>
-                            <ons-button class="tipNbudgetConfirm" id="confirm" onclick="myNav.pushPage('search.html');">Let's Chooz</ons-button>
+                            <ons-button class="tipNbudgetConfirm" id="confirm" onclick="myNav.pushPage('search.html');">Get me Restaurants!</ons-button>
                         </form>
                     </div>
                 </div>
@@ -171,7 +174,7 @@
                             <input type="text" class="tipNbudget" id="budget"><label>Budget</label>
                         </div>
                         <br>
-                        <ons-button class="tipNbudgetConfirm" id="confirm" onclick="myNav.pushPage('search.html');">Let's Chooz</ons-button>
+                        <ons-button class="tipNbudgetConfirm" id="confirm" onclick="myNav.pushPage('search.html');">Get me Restaurants!</ons-button>
                     </div>
 
                 </div>
@@ -188,7 +191,6 @@
                 <ons-progress-bar value="10"></ons-progress-bar>
                 <div class="center">Budget Bar</div>
                 <div class="right">
-                    <ons-button class="searchBtn" id="searchButton" onclick="search();">Search</ons-button>
                     <ons-button class="settingBtn" id="settingButton" onclick="setting();">Setting</ons-button>
                 </div>
             </ons-toolbar>
@@ -212,17 +214,15 @@
                     <ons-button class="settingBtn" id="settingButton" onclick="setting();">Setting</ons-button>
                 </div>
             </ons-toolbar>
-
-            <ons-list id="menu-list">
-<!--                 <ons-lazy-repeat id="infinite-list">
-                    <ons-list-header>Default</ons-list-header>
-                </ons-lazy-repeat>
- -->            
+            <div class="menuContainer">
+            <div class="menuDiv">
+            <ons-list class="menuList" id="menu-list">
             </ons-list>
-
-            <p style="text-align: center; margin: 50% 0;">
-                <ons-button class="choozBtn" onclick="showModal(); chooz()">CHOOZ</ons-button>
-            </p>
+            </div>
+            <div class="choozBtn">
+                <div class="round-button"><div class="round-button-circle"><a href="http://example.com" class="round-button">Button!!</a></div></div>
+                <button class="w3-button w3-xlarge w3-circle w3-black" onclick="showModal(); chooz()">CHOOZ</button></div>
+            </div>
             <ons-modal direction="up">
                 <div style="text-align: center">
                     <p>
@@ -239,15 +239,18 @@
                 </div>
                 <div class="center">Setting</div>
             </ons-toolbar>
-        <ons-page id="setting">
-            <ons-button class="viewRestaurantBtn">
-                <div>View Restaurants</div>
-            </ons-button>
-            <ons-button class="logoutBtn">
-                <div>Log Out</div>
-            </ons-button>
+        <ons-page class="settingPage" id="setting">
+            <div class="settingMid">
+            <div class="settingInner">
+                <div style="float:left;"><ons-button class="viewRestaurantBtn">View Restaurant</ons-button></div>
+                <div style="float:right;"><ons-button class="logoutBtn">Log out</ons-button></div>
             <br>
-            <table>
+                <br>
+                <br>
+                <br>
+                
+                <div class="settingContainer">
+            <table class="settingStuff">
                 <tr>
                     <th>Zip Code</th>
                     <th>Tip(%)</th>
@@ -259,29 +262,29 @@
                     <td>$12</td>
                 </tr>
             </table>
-
-            <ul>
-                <li>King Doh
-                    <ons-button class="detailBtn">Detail</ons-button>
-                </li>
-                <li>Ibbys
-                    <ons-button class="detailBtn">Detail</ons-button>
-                </li>
+            <br>
+            <ul class="resList">
+                <li>King Doh<ons-button class="detailBtn">Detail</ons-button></li>
+                <li>Ibbys<ons-button class="detailBtn">Detail</ons-button></li>
             </ul>
-
-            <table>
+            <table class="settingStuff">
                 <tr>
                     <th>Email Address</th>
-                    <th>---</th>
+                    <th>email@google.com</th>
                 </tr>
                 <tr>
                     <td>Full Name</td>
-                    <td>---</td>
+                    <td>Name Name</td>
                 </tr>
-                <tr style="text-align: center; margin: 30% 0;">
-                    <td><ons-button class="resetPasswordBtn" onclick="showModal(); resetPassword()">Reset Password</ons-button></td>
+                <tr style="text-align: center; margin: 0 auto;">
+                    <td></td>    
                 </tr>
             </table>
+                <ons-button class="locationReset" onclick="showModal(); resetPassword()">Reset Password</ons-button>
+                    </div>
+                
+            </div>
+            </div>
             <ons-modal direction="up">
                 <div style="text-align: center">
                     <p>
