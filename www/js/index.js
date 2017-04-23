@@ -212,8 +212,8 @@ var venues = [];
 var venue_dict = {};
 var menu_dict = {};
 
-var initMap = function (bool = false) {
-  if (!bool) return;
+var initMap = function (enabled) {
+  // if (!bool) return;
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: -34.397, lng: 150.644 },
     zoom: 15
@@ -239,22 +239,38 @@ var initMap = function (bool = false) {
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
    
-   
-    navigator.geolocation.getCurrentPosition(function (position) {
-      var pos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
+    if (enabled) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        var pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
 
-      console.log("latlonggoit");
+        // infoWindow.setPosition(pos);
+        // infoWindow.setContent('Location found.');
+        map.setCenter(pos);
+        updateFQ();
+      }, function () {
+        handleLocationError(true, infoWindow, map.getCenter());
+      });
+    } else {
+      // var geocoder = new google.maps.Geocoder();
+      var address = document.getElementById("zipcode").value;
+      geocoder.geocode({ 'address': address }, function (results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+              var pos = {
+                lat: results[0].geometry.location.lat(),
+                lng: results[0].geometry.location.lng() 
+              };
 
-      // infoWindow.setPosition(pos);
-      // infoWindow.setContent('Location found.');
-      map.setCenter(pos);
-      updateFQ();
-    }, function () {
-      handleLocationError(true, infoWindow, map.getCenter());
-    });
+              map.setCenter(pos);
+              updateFQ();
+
+          } else {
+              alert("Request failed.")
+          }
+      });
+    }
   }
     else {
     // Browser doesn't support Geolocation
@@ -419,7 +435,8 @@ ons.ready(function () {
         document.querySelector('#myNav')
           .pushPage('search.html', { data: { title: 'search' } })
           .then(function () {
-            initMap(true);
+            var enabled = (page.id === 'tipNbudgetW/location') ? true : false;
+            initMap(enabled);
             tipNbudget();
           });
       }
