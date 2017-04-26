@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+    <meta charset="utf-8">
+    <!--  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"> -->
+    <link rel="stylesheet" href="lib/onsen/css/onsenui.css" />
+    <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.css" />
+    <link rel="stylesheet" href="css/index.css" />
+
+    <!--    Fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <intercept-url pattern="/favicon.ico" access="ROLE_ANONYMOUS" />
+    <script src="https://www.gstatic.com/firebasejs/3.7.3/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCklt4gW7mBR4lV-IIKezeTPXHYF28L7Jg",
+            authDomain: "chooz-bd8c2.firebaseapp.com",
+            databaseURL: "https://chooz-bd8c2.firebaseio.com",
+            storageBucket: "chooz-bd8c2.appspot.com",
+            messagingSenderId: "623847355109"
+        };
+        firebase.initializeApp(config);
+    </script>
+    <!--<script src="lib/angular/angular.min.js"></script>-->
+    <style>
+        #map {
+            height: 100%;
+        }
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
+    <script src="lib/onsen/js/onsenui.js"></script>
+    <!--    <script type="text/javascript" src="cordova.js"></script> Future Use for Cordova Plugins-->
+    <script type="text/javascript" src="js/index.js"></script>
+    <title>Chooz</title>
+</head>
+
+<body>
+    <ons-navigator animaition="slide" id="myNav" page="login.html" var="myNav"></ons-navigator>
+
+    <ons-template id="login.html">
+        <ons-page id="login" class="blueBackground">
+            <div class="loginOuter">
+                <div class="loginMid">
+                    <div class="loginInner">
+                        <h3 data-heading="z">Chooz</h3><br><br>
+                        <div id="error"></div>
+                        <div>
+                            <input type="email" id="log_id" class="id" placeholder="Email"><br>
+                            <input type="password" id="log_password" class="password" placeholder="Password"><br><br>
+                        </div>
+                        <ons-button class="loginBtn" id="loginButton" onclick="login()">Sign in</ons-button>
+                        <ons-button class="guestBtn" id="anonLoginButton" onclick="anonLogin()">Guest</ons-button><br><br>
+                        <span class="or-container">-or-</span>
+                        <br>
+                        <button class="googbtn" onclick="googleLogin()">
+                            <i class="fa fa-google" style="font-size:36px"></i>
+                        </button>
+                        <button class="facebookBtn" onclick="facebookLogin()">
+                            <i class="fa fa-facebook-official" style="font-size:36px"></i>
+                        </button><br><br>
+                        <ons-button class="regBtn" id="registerButton" onclick="myNav.pushPage('register.html');">Not a Member? Click Here to Register</ons-button>
+                    </div>
+                </div>
+            </div>
+        </ons-page>
+
+    </ons-template>
+
+    <ons-template id="register.html">
+        <ons-page id="register">
+            <ons-toolbar>
+                <div class="left">
+                    <ons-back-button>Back</ons-back-button>
+                </div>
+                <div class="center"></div>
+            </ons-toolbar>
+            <div class="loginOuter">
+                <div class="loginMid">
+                    <div class="loginInner">
+                        <input class="reg" placeholder="Full Name"><br>
+                        <input type="email" class="reg" id="reg_id" placeholder="Email"><br>
+                        <input type="password" class="reg" id="reg_password" placeholder="Password"><br>
+                        <input type="password" class="reg" id="reg_re_password" placeholder="Confirm Password"><br>
+                        <font color=#badcef size="2" id="reg_error_msg">Password does not match</font><br>
+
+                        <ons-button class="regConfirm" onclick="register()">Register</ons-button>
+                    </div>
+                </div>
+            </div>
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="location.html">
+        <ons-page id="location">
+            <ons-toolbar>
+                <div class="left">
+                    <ons-back-button>Back</ons-back-button>
+                </div>
+                <div class="center"></div>
+            </ons-toolbar>
+            <div class="loginOuter">
+                <div class="locService">
+                    <div class="locInner">
+                        <i class="fa fa-map-marker" style="top:10px;font-size:30px; color: white;"></i>
+                        <h2>Allow Location Service?</h2>
+                        <button class="location" id="allowLocationButton" onclick="myNav.pushPage('tipNbudgetW/location.html');">Yes</button>
+                        <button class="location" id="notAllowLocationButton" onclick="myNav.pushPage('tipNbudgetW/Olocation.html');">No</button>
+                    </div>
+                </div>
+            </div>
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="tipNbudgetW/location.html">
+        <ons-page id="tipNbudgetW/location">
+            <ons-toolbar>
+                <div class="left">
+                    <ons-back-button>Back</ons-back-button>
+                </div>
+                <div class="center"></div>
+            </ons-toolbar>
+            <div class="loginOuter">
+                <div class="loginMid">
+                    <div class="numContainer">
+                        <h2> Put those numbers in! </h2>
+                        <form action="search.html">
+                            <div class="question">
+                                <input type="text" class="tipNbudget" id="tip"><label>Tip %</label>
+                            </div>
+                            <div class="question">
+                                <input type="text" class="tipNbudget" id="budget"><label>Budget</label>
+                            </div>
+                            <br>
+                            <ons-button class="tipNbudgetConfirm" id="confirm" onclick="myNav.pushPage('search.html');">Get me Restaurants!</ons-button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="tipNbudgetW/Olocation.html">
+        <ons-page id="tipNbudgetW/Olocation">
+            <ons-toolbar>
+                <div class="left">
+                    <ons-back-button>Back</ons-back-button>
+                </div>
+                <div class="center"></div>
+            </ons-toolbar>
+            <div class="loginOuter">
+                <div class="loginMid">
+                    <div class="numContainer">
+                        <h2> Put those numbers in! </h2>
+                        <div id="map"></div>
+                        <div class="question">
+                            <input type="text" class="zipcode" id="zipcode"><label>Zip Code</label>
+                        </div>
+                        <div class="question">
+                            <input type="text" class="tipNbudget" id="tip"><label>Tip %</label>
+                        </div>
+                        <div class="question">
+                            <input type="text" class="tipNbudget" id="budget"><label>Budget</label>
+                        </div>
+                        <br>
+                        <ons-button class="tipNbudgetConfirm" id="confirm" onclick="myNav.pushPage('search.html');">Get me Restaurants!</ons-button>
+                    </div>
+
+                </div>
+            </div>
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="search.html">
+        <ons-page id="search">
+            <ons-toolbar>
+                <div class="left">
+                    <ons-back-button>Back</ons-back-button>
+                </div>
+                <ons-progress-bar value="10"></ons-progress-bar>
+                <div class="center">Budget Bar</div>
+                <div class="right">
+                    <ons-button class="settingBtn" id="settingButton" onclick="setting();">Setting</ons-button>
+                </div>
+            </ons-toolbar>
+            <div id="map"></div>
+
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="menulist.html">
+        <ons-page id="menulist">
+            <ons-toolbar>
+                <div class="left">
+                    <ons-back-button>Back</ons-back-button>
+                </div>
+                <ons-progress-bar value="10"></ons-progress-bar>
+                <div class="center" id="list-title">Budget Bar</div>
+                <div class="right">
+                    <ons-button class="settingBtn" id="settingButton" onclick="setting();">Setting</ons-button>
+                </div>
+            </ons-toolbar>
+
+            <div class="menuContainer">
+                <div class="menuDiv">
+                    <ons-list class="menuList" id="menu-list">
+
+                    </ons-list>
+                    <ons-popover direction="up" id="popover">
+                        <div id="detail" style="padding: 10px; text-align: center;">
+                            <p>
+
+                            </p>
+                            <p>
+                                <ons-button onclick="hidePopover()">Close</ons-button>
+                            </p>
+                        </div>
+                    </ons-popover>
+                </div>
+                <div class="choozBtn">
+                    <div class="round-button">
+                        <div class="round-button-circle"><a href="http://example.com" class="round-button">Button!!</a></div>
+                    </div>
+                    <button class="w3-button w3-xlarge w3-circle w3-black" onclick="showModal(); myNav.pushPage('search.html')">CHOOZ</button>
+                </div>
+            </div>
+            <ons-modal direction="up">
+                <div style="text-align: center">
+                    <p>
+                        <ons-icon icon="md-spinner" size="28px" spin></ons-icon> Loading...
+                    </p>
+                </div>
+            </ons-modal>
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="ordersummary.html">
+        <ons-toolbar>
+            <div class="left">
+                <ons-back-button>Back</ons-back-button>
+            </div>
+            <div class="center">Setting</div>
+        </ons-toolbar>
+        <ons-page id="ordersummary">
+            <ons-list id="ordersummary">
+                <ons-list-header>
+                    Order Summary
+                </ons-list-header>
+                <ons-list-item id=items>
+
+                </ons-list-item>
+            </ons-list>
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="setting.html">
+        <ons-toolbar>
+            <div class="left">
+                <ons-back-button>Back</ons-back-button>
+            </div>
+            <div class="center">Setting</div>
+        </ons-toolbar>
+        <ons-page class="settingPage" id="setting">
+            <div class="settingMid">
+                <div class="settingInner">
+                    <div style="float:left;">
+                        <ons-button class="viewRestaurantBtn">View Restaurant</ons-button>
+                    </div>
+                    <div style="float:right;">
+                        <ons-button class="logoutBtn">Log out</ons-button>
+                    </div>
+                    <br>
+                    <br><br><br>
+                    <div class="settingContainer">
+                        <table class="settingStuff">
+                            <tr>
+                                <th>Zip Code</th>
+                                <th>Tip(%)</th>
+                                <th>Budget</th>
+                            </tr>
+                            <tr>
+                                <td>63130</td>
+                                <td>12</td>
+                                <td>$12</td>
+                            </tr>
+                        </table>
+                        <br>
+                        <ul class="resList">
+                            <li>King Doh
+                                <ons-button class="detailBtn">Detail</ons-button>
+                            </li>
+                            <li>Ibbys
+                                <ons-button class="detailBtn">Detail</ons-button>
+                            </li>
+                        </ul>
+                        <table class="settingStuff">
+
+                            <tr>
+                                <th>Email Address</th>
+                                <th>email@google.com</th>
+                            </tr>
+                            <tr>
+                                <td>Full Name</td>
+                                <td>Name Name</td>
+                            </tr>
+                            <tr style="text-align: center; margin: 0 auto;">
+                                <td></td>
+                            </tr>
+                        </table>
+                        <ons-button class="locationReset" onclick="showModal(); resetPassword()">Reset Password</ons-button>
+                    </div>
+                </div>
+            </div>
+            <ons-modal direction="up">
+                <div style="text-align: center">
+                    <p>
+                        <ons-icon icon="md-spinner" size="28px" spin></ons-icon> Loading...
+                    </p>
+                </div>
+            </ons-modal>
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="receipt.html">
+        <ons-dialog id="dialog-3">
+            <div style="text-align: center; padding: 10px;">
+                <p>
+                    <ons-list-item>
+                        <div id="menuname" class="center">
+                            Menu Name
+                        </div>
+
+                        <div id="price" class="center">
+                            Price
+                        </div>
+                    </ons-list-item>
+                    <p>
+
+                        <p>
+                            <ons-button onclick="hideDialog('dialog-3')">Close</ons-button>
+                        </p>
+            </div>
+        </ons-dialog>
+    </ons-template>
+
+
+</body>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD7m5lD3fCCz61cJY6McEyp3tv8WdL3Gg&callback=initMap"
+    type="text/javascript"></script>
+
+</html>
